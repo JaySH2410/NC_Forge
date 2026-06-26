@@ -6,7 +6,7 @@ public class AuthValidationMessages
        "First name is required.";
 
     public const string FirstNameMinLength =
-        "First name must be at least 2 characters.";
+        "First name must be at least 3 characters.";
 
     public const string FirstNameMaxLength =
         "First name cannot exceed 100 characters.";
@@ -15,7 +15,7 @@ public class AuthValidationMessages
         "Last name is required.";
 
     public const string LastNameMinLength =
-        "Last name must be at least 2 characters.";
+        "Last name must be at least 3 characters.";
 
     public const string LastNameMaxLength =
         "Last name cannot exceed 100 characters.";
