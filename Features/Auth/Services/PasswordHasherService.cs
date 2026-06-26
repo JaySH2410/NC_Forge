@@ -5,8 +5,7 @@ namespace test.Features.Auth.Services;
 
 public class PasswordHasherService : IPasswordHasher
 {
-    private readonly PasswordHasher<object> _passwordHasher =
-        new();
+    private readonly PasswordHasher<object> _passwordHasher = new();
 
     public string HashPassword(
         string password)
