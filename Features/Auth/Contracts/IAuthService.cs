@@ -11,4 +11,7 @@ public interface IAuthService
     Task<LoginResponse> LoginAsync(
         LoginRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<CurrentUserResponse> GetCurrentUserAsync(
+        CancellationToken cancellationToken = default);
 }
