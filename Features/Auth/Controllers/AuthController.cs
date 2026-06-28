@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿    using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using test.Features.Auth.Constants;
 using test.Features.Auth.Contracts;
@@ -46,8 +46,15 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpGet("me")]
-    public IActionResult Me()
+    public async Task<ActionResult<ApiResponse<CurrentUserResponse>>> GetCurrentUser(
+    CancellationToken cancellationToken)
     {
-        return Ok("Authenticated");
+        var response = await _authService.GetCurrentUserAsync(
+            cancellationToken);
+
+        return Ok(
+            ApiResponse<CurrentUserResponse>.Success(
+                response,
+                AuthSuccessMessages.CurrentUserFetched));
     }
 }
