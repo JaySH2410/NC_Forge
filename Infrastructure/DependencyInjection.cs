@@ -5,6 +5,8 @@ using System.Text;
 using test.Features.Auth.Contracts;
 using test.Features.Auth.Services;
 using test.Infrastructure.Configuration;
+using test.Shared.Contracts;
+using test.Shared.Services;
 
 namespace test.Infrastructure;
 
@@ -14,6 +16,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
         // DbContext
         // Options
         // Services
@@ -21,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
+        //User
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         // JWT
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));  
         services
