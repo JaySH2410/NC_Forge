@@ -18,40 +18,35 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
 });
-
 ////.ConfigureApiBehaviorOptions(options =>
 //// {
 ////     options.SuppressModelStateInvalidFilter = true;
 //// })
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+builder.Services.AddSwaggerGen(
+    options =>
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter: Bearer {your JWT token}"
-    });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+
+        options.SwaggerDoc("v1", new OpenApiInfo
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+            Title = "Forge APIs",
+            Version = "v1"
+        });
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "jwt",
+            In = ParameterLocation.Header,
+            Description = "enter: bearer {your jwt token}"
+        });
+        options.AddSecurityRequirement(document => new() { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
+    }
+);
+
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddInfrastructure(builder.Configuration);
