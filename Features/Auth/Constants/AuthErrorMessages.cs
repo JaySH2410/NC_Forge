@@ -7,4 +7,10 @@ public static class AuthErrorMessages
 
     public const string InvalidCredentials =
         "Invalid email or password.";
+
+    public const string Unauthorized =
+        "Unauthorized User.";
+
+    public const string UserNotFound =
+        "No such User Exists.";
 }
