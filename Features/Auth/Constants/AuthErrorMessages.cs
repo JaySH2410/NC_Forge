@@ -13,4 +13,13 @@ public static class AuthErrorMessages
 
     public const string UserNotFound =
         "No such User Exists.";
+
+    public const string InvalidRefreshToken =
+     "Invalid refresh token.";
+
+    public const string RefreshTokenExpired =
+        "Refresh token has expired.";
+
+    public const string RefreshTokenRevoked =
+        "Refresh token has already been revoked.";
 }
