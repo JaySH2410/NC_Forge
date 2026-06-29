@@ -73,4 +73,58 @@ public class AuthController : ControllerBase
                 AuthSuccessMessages.TokenRefreshed)
         );
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<ActionResult<ApiResponse>> Logout(
+    LogoutRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _authService.LogoutAsync(request, cancellationToken);
+
+        return Ok(ApiResponse.Success(AuthSuccessMessages.LogoutSuccess));
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<ActionResult<ApiResponse>> ChangePassword(
+    ChangePasswordRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _authService.ChangePasswordAsync(
+            request,
+            cancellationToken);
+
+        return Ok(
+            ApiResponse.Success(
+                AuthSuccessMessages.PasswordChangedSuccessfully));
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult<ApiResponse>> ForgotPassword(
+    ForgotPasswordRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _authService.ForgotPasswordAsync(
+            request,
+            cancellationToken);
+
+        return Ok(
+            ApiResponse.Success(
+                AuthSuccessMessages.PasswordResetEmailSent));
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult<ApiResponse>> ResetPassword(
+    ResetPasswordRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _authService.ResetPasswordAsync(
+            request,
+            cancellationToken);
+
+        return Ok(
+            ApiResponse.Success(
+                AuthSuccessMessages.PasswordResetSuccessful));
+    }
 }

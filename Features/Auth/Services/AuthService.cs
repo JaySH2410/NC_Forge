@@ -14,21 +14,27 @@ public class AuthService : IAuthService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IRefreshTokenService _refreshTokenService;
+    private readonly IPasswordResetService _passwordResetService;
     private readonly ICurrentUserService _currentUser;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(
         AppDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenService jwtTokenService,
         IRefreshTokenService refreshTokenService,
-        ICurrentUserService currentUser
+        IPasswordResetService passwordResetService,
+        ICurrentUserService currentUser,
+        ILogger<AuthService> logger
         )
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;
         _jwtTokenService = jwtTokenService;
         _refreshTokenService = refreshTokenService;
+        _passwordResetService = passwordResetService;
         _currentUser = currentUser;
+        _logger = logger;
     }
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request,CancellationToken cancellationToken = default)
@@ -121,6 +127,12 @@ public class AuthService : IAuthService
         };
         
     }
+    private static string NormalizeEmail(string email)
+    {
+        return email
+            .Trim()
+            .ToLowerInvariant();
+    }
 
     public async Task<CurrentUserResponse> GetCurrentUserAsync(CancellationToken cancellationToken = default)
     {
@@ -161,33 +173,14 @@ public class AuthService : IAuthService
         var tokenHash = _refreshTokenService.HashToken(
             request.RefreshToken);
 
-        var refreshToken = await _dbContext.RefreshTokens
-            .Include(x => x.User)
-            .FirstOrDefaultAsync(
-                x => x.TokenHash == tokenHash,
-                cancellationToken);
-
-        if (refreshToken is null)
-        {
-            throw new UnauthorizedException(
-                AuthErrorMessages.InvalidRefreshToken);
-        }
-
-        if (refreshToken.ExpiresAt <= DateTimeOffset.UtcNow)
-        {
-            throw new UnauthorizedException(
-                AuthErrorMessages.RefreshTokenExpired);
-        }
-
-        if (refreshToken.RevokedAt is not null)
-        {
-            throw new UnauthorizedException(
-                AuthErrorMessages.RefreshTokenRevoked);
-        }
+        var refreshToken = await _refreshTokenService.GetValidRefreshTokenAsync(request.RefreshToken, cancellationToken);
 
         var accessToken = _jwtTokenService.GenerateAccessToken(refreshToken.User);
 
         var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
+
+        _refreshTokenService.RevokeRefreshToken(refreshToken, RefreshTokenMessages.TokenRotated);
+        refreshToken.ReplacedByTokenHash = newRefreshToken.TokenHash;
 
         var refreshTokenEntity = new RefreshToken
         {
@@ -196,13 +189,8 @@ public class AuthService : IAuthService
             UserId = refreshToken.UserId
         };
 
-        refreshToken.RevokedAt = DateTimeOffset.UtcNow;
-        refreshToken.ReplacedByTokenHash = newRefreshToken.TokenHash;
-        refreshToken.RevokedReason = RefreshTokenMessages.TokenRotated;
-
         await _dbContext.RefreshTokens.AddAsync(refreshTokenEntity,cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-
 
         return new RefreshTokenResponse
         {
@@ -216,10 +204,118 @@ public class AuthService : IAuthService
         };
 
     }
-    private static string NormalizeEmail(string email)
+
+    public async Task LogoutAsync(LogoutRequest request, CancellationToken cancellationToken = default)
     {
-        return email
+        var refreshToken = await _refreshTokenService.GetValidRefreshTokenAsync(request.RefreshToken, cancellationToken);
+
+        if (refreshToken.UserId != _currentUser.UserId)
+        {
+            throw new UnauthorizedException(AuthErrorMessages.Unauthorized);
+        }
+
+        _refreshTokenService.RevokeRefreshToken(refreshToken, RefreshTokenMessages.UserLoggedOut);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        if (_currentUser.UserId is null)
+        {
+            throw new UnauthorizedException(AuthErrorMessages.Unauthorized);
+        }
+
+        var user = await _dbContext.Users
+            .Include(x => x.RefreshTokens)
+            .FirstOrDefaultAsync(
+                x => x.Id == _currentUser.UserId,
+                cancellationToken);
+
+        if (user is null)
+        {
+            throw new NotFoundException(AuthErrorMessages.UserNotFound);
+        }
+
+        var isValidPassword = _passwordHasher.VerifyPassword(
+            request.CurrentPassword,
+            user.PasswordHash);
+
+        if (!isValidPassword)
+        {
+            throw new UnauthorizedException(AuthErrorMessages.InvalidCredentials);
+        }
+
+        user.PasswordHash = _passwordHasher.HashPassword(request.NewPassword);
+
+        await _refreshTokenService.RevokeAllUserRefreshTokensAsync(
+            user.Id,
+            RefreshTokenMessages.PasswordChanged,
+            cancellationToken);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        var email = request.Email
             .Trim()
             .ToLowerInvariant();
+
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(
+                x => x.Email == email,
+                cancellationToken);
+
+        // Prevent user enumeration
+        if (user is null)
+        {
+            return;
+        }
+
+        var resetToken =
+            _passwordResetService.GenerateToken();
+
+        var entity = new PasswordResetToken
+        {
+            TokenHash = resetToken.TokenHash,
+            ExpiresAt = resetToken.ExpiresAt,
+            UserId = user.Id
+        };
+
+        await _dbContext.PasswordResetTokens.AddAsync(
+            entity,
+            cancellationToken);
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
+
+        _logger.LogInformation(
+            "Password reset token for {Email}: {Token}",
+            user.Email,
+            resetToken.Token);
+    }
+
+    public async Task ResetPasswordAsync(ResetPasswordRequest request,CancellationToken cancellationToken = default)
+    {
+        var passwordResetToken =
+            await _passwordResetService.GetValidTokenAsync(
+                request.Token,
+                cancellationToken);
+
+        passwordResetToken.User.PasswordHash =
+            _passwordHasher.HashPassword(
+                request.NewPassword);
+
+        _passwordResetService.MarkAsUsed(
+            passwordResetToken);
+
+        await _refreshTokenService.RevokeAllUserRefreshTokensAsync(
+            passwordResetToken.UserId,
+            RefreshTokenMessages.PasswordChanged,
+            cancellationToken);
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
     }
 }

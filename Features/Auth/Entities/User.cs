@@ -14,6 +14,6 @@ public class User : AuditableEntity
     public bool IsEmailVerified { get; set; }
 
     public DateTimeOffset? LastLoginAt { get; set; }
-    public ICollection<RefreshToken> RefreshTokens { get; set; }
-    = new List<RefreshToken>();
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
 }
