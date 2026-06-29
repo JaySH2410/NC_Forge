@@ -22,4 +22,13 @@ public static class AuthErrorMessages
 
     public const string RefreshTokenRevoked =
         "Refresh token has already been revoked.";
+
+    public const string InvalidPasswordResetToken =
+        "Invalid password reset token.";
+
+    public const string PasswordResetTokenExpired =
+        "Password reset token has expired.";
+
+    public const string PasswordResetTokenAlreadyUsed =
+        "Password reset token has already been used.";
 }
