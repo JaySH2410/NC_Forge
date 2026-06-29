@@ -13,4 +13,6 @@ public sealed class JwtOptions
     public int AccessTokenExpiryMinutes { get; init; }
 
     public int RefreshTokenExpiryDays { get; init; }
+
+    public int PasswordResetTokenExpiryMinutes { get; init; }
 }
