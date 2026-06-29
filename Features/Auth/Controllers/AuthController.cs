@@ -1,4 +1,4 @@
-﻿    using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using test.Features.Auth.Constants;
 using test.Features.Auth.Contracts;
@@ -56,5 +56,21 @@ public class AuthController : ControllerBase
             ApiResponse<CurrentUserResponse>.Success(
                 response,
                 AuthSuccessMessages.CurrentUserFetched));
+    }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<ApiResponse<RefreshTokenResponse>>> Refresh(
+    RefreshTokenRequest request,
+    CancellationToken cancellationToken)
+    {
+        var response = await _authService.RefreshTokenAsync(
+            request,
+            cancellationToken);
+
+        return Ok(
+            ApiResponse<RefreshTokenResponse>.Success(
+                response,
+                AuthSuccessMessages.TokenRefreshed)
+        );
     }
 }
