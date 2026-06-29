@@ -15,4 +15,5 @@ public class User : AuditableEntity
 
     public DateTimeOffset? LastLoginAt { get; set; }
     public ICollection<RefreshToken> RefreshTokens { get; set; }
+    = new List<RefreshToken>();
 }
