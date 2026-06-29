@@ -1,8 +1,12 @@
 ﻿namespace test.Features.Auth.DTOs;
 
-public sealed class TokenResult
+public class TokenResult
 {
     public required string AccessToken { get; init; }
 
-    public DateTimeOffset ExpiresAt { get; init; }
+    public required string RefreshToken { get; init; }
+
+    public DateTimeOffset AccessTokenExpiresAt { get; init; }
+
+    public DateTimeOffset RefreshTokenExpiresAt { get; init; }
 }

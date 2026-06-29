@@ -2,7 +2,6 @@
 
 public class LoginResponse
 {
-    public required string AccessToken { get; init; }
+    public required TokenResult Tokens { get; init; }
 
-    public DateTimeOffset ExpiresAt { get; init; }
 }
