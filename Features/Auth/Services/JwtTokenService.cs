@@ -19,7 +19,7 @@ public class JwtTokenService : IJwtTokenService
     {
         _jwtOptions = options.Value;
     }
-    public TokenResult GenerateAccessToken(User user)
+    public AccessTokenResult GenerateAccessToken(User user)
     {
         var expiresAt = DateTimeOffset.UtcNow.AddMinutes(_jwtOptions.AccessTokenExpiryMinutes);
         var claims = new List<Claim>
@@ -46,10 +46,10 @@ public class JwtTokenService : IJwtTokenService
 
         var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new TokenResult
+        return new AccessTokenResult
         {
             AccessToken = accessToken,
-            ExpiresAt = expiresAt
+            ExpiresAt = expiresAt,
         };
     }
 }
