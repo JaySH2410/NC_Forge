@@ -196,7 +196,13 @@ public class AuthService : IAuthService
             UserId = refreshToken.UserId
         };
 
+        refreshToken.RevokedAt = DateTimeOffset.UtcNow;
+        refreshToken.ReplacedByTokenHash = newRefreshToken.TokenHash;
+        refreshToken.RevokedReason = RefreshTokenMessages.TokenRotated;
+
         await _dbContext.RefreshTokens.AddAsync(refreshTokenEntity,cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
 
         return new RefreshTokenResponse
         {
