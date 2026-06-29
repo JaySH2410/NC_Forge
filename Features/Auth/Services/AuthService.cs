@@ -13,18 +13,21 @@ public class AuthService : IAuthService
     private readonly AppDbContext _dbContext;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwtTokenService;
+    private readonly IRefreshTokenService _refreshTokenService;
     private readonly ICurrentUserService _currentUser;
 
     public AuthService(
         AppDbContext dbContext,
         IPasswordHasher passwordHasher,
         IJwtTokenService jwtTokenService,
+        IRefreshTokenService refreshTokenService,
         ICurrentUserService currentUser
         )
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;
         _jwtTokenService = jwtTokenService;
+        _refreshTokenService = refreshTokenService;
         _currentUser = currentUser;
     }
 
@@ -80,30 +83,46 @@ public class AuthService : IAuthService
 
         if (user is null)
         {
-            throw new BusinessException(
-                AuthErrorMessages.InvalidCredentials);
+            throw new BusinessException(AuthErrorMessages.InvalidCredentials);
         }
 
         var isValidPassword =_passwordHasher.VerifyPassword(request.Password,user.PasswordHash);
 
         if (!isValidPassword)
         {
-            throw new BusinessException(
-                AuthErrorMessages.InvalidCredentials);
+            throw new BusinessException(AuthErrorMessages.InvalidCredentials);
         }
 
-        var tokenResult = _jwtTokenService.GenerateAccessToken(user);
+        var accessToken = _jwtTokenService.GenerateAccessToken(user);
 
-        return new LoginResponse
+        var refreshToken = _refreshTokenService.GenerateRefreshToken();
+
+        var refreshTokenEntity = new RefreshToken
         {
-            AccessToken = tokenResult.AccessToken,
-            ExpiresAt = tokenResult.ExpiresAt
+            TokenHash = refreshToken.TokenHash,
+            ExpiresAt = refreshToken.ExpiresAt,
+            UserId = user.Id
         };
 
+        await _dbContext.RefreshTokens.AddAsync(refreshTokenEntity,cancellationToken);
+
+        user.LastLoginAt = DateTimeOffset.UtcNow;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return new LoginResponse { 
+            Tokens = new TokenResult
+            {
+                AccessToken = accessToken.AccessToken,
+                AccessTokenExpiresAt = accessToken.ExpiresAt,
+                RefreshToken = refreshToken.RefreshToken,
+                RefreshTokenExpiresAt = refreshToken.ExpiresAt
+            }
+        };
+        
     }
 
-    public async Task<CurrentUserResponse> GetCurrentUserAsync(
-    CancellationToken cancellationToken = default)
+    public async Task<CurrentUserResponse> GetCurrentUserAsync(CancellationToken cancellationToken = default)
     {
         var currentUserId = _currentUser.UserId;
         if (currentUserId is null)
