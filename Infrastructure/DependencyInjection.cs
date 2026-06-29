@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+        services.AddScoped<IPasswordResetService, PasswordResetService>();
         services.AddScoped<IAuthService, AuthService>();
         //User
         services.AddScoped<ICurrentUserService, CurrentUserService>();
