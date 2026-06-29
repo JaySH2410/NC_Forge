@@ -153,6 +153,63 @@ public class AuthService : IAuthService
             LastLoginAt = user.LastLoginAt
         };
     }
+
+    public async Task<RefreshTokenResponse> RefreshTokenAsync(
+    RefreshTokenRequest request,
+    CancellationToken cancellationToken = default)
+    {
+        var tokenHash = _refreshTokenService.HashToken(
+            request.RefreshToken);
+
+        var refreshToken = await _dbContext.RefreshTokens
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(
+                x => x.TokenHash == tokenHash,
+                cancellationToken);
+
+        if (refreshToken is null)
+        {
+            throw new UnauthorizedException(
+                AuthErrorMessages.InvalidRefreshToken);
+        }
+
+        if (refreshToken.ExpiresAt <= DateTimeOffset.UtcNow)
+        {
+            throw new UnauthorizedException(
+                AuthErrorMessages.RefreshTokenExpired);
+        }
+
+        if (refreshToken.RevokedAt is not null)
+        {
+            throw new UnauthorizedException(
+                AuthErrorMessages.RefreshTokenRevoked);
+        }
+
+        var accessToken = _jwtTokenService.GenerateAccessToken(refreshToken.User);
+
+        var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
+
+        var refreshTokenEntity = new RefreshToken
+        {
+            TokenHash = newRefreshToken.TokenHash,
+            ExpiresAt = newRefreshToken.ExpiresAt,
+            UserId = refreshToken.UserId
+        };
+
+        await _dbContext.RefreshTokens.AddAsync(refreshTokenEntity,cancellationToken);
+
+        return new RefreshTokenResponse
+        {
+            Tokens = new TokenResult
+            {
+                AccessToken = accessToken.AccessToken,
+                RefreshToken = newRefreshToken.RefreshToken,
+                AccessTokenExpiresAt = accessToken.ExpiresAt,
+                RefreshTokenExpiresAt = newRefreshToken.ExpiresAt
+            }
+        };
+
+    }
     private static string NormalizeEmail(string email)
     {
         return email
