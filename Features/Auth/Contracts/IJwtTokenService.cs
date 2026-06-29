@@ -5,5 +5,5 @@ namespace test.Features.Auth.Contracts;
 
 public interface IJwtTokenService
 {
-    TokenResult GenerateAccessToken(User user);
+    AccessTokenResult GenerateAccessToken(User user);
 }
