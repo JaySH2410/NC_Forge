@@ -14,4 +14,8 @@ public interface IAuthService
 
     Task<CurrentUserResponse> GetCurrentUserAsync(
         CancellationToken cancellationToken = default);
+
+    Task<RefreshTokenResponse> RefreshTokenAsync(
+        RefreshTokenRequest request,
+        CancellationToken cancellationToken = default);
 }
