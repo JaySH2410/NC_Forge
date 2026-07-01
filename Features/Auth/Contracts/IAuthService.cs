@@ -1,4 +1,6 @@
 ﻿using test.Features.Auth.DTOs;
+using test.Features.Auth.DTOs.Request;
+using test.Features.Auth.DTOs.Response;
 
 namespace test.Features.Auth.Contracts;
 
@@ -33,5 +35,12 @@ public interface IAuthService
 
     Task ResetPasswordAsync(
         ResetPasswordRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task VerifyEmailAsync(
+        VerifyEmailRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task ResendVerificationEmailAsync(
         CancellationToken cancellationToken = default);
 }

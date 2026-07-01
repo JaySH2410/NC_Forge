@@ -12,4 +12,6 @@ public static class AuthSuccessMessages
     public const string PasswordChangedSuccessfully = "Password Changed Successfully.";
     public const string PasswordResetEmailSent = "If an account exists for the provided email address, a password reset link has been sent.";
     public const string PasswordResetSuccessful = "Password has been reset successfully.";
+    public const string EmailVerifiedSuccessfully = "Email verified successfully.";
+    public const string VerificationEmailSent = "Verification email sent successfully.";
 }

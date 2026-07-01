@@ -4,10 +4,11 @@ using System.Security.Cryptography;
 using System.Text;
 using test.Features.Auth.Constants;
 using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs;
+using test.Features.Auth.DTOs.Internal;
 using test.Features.Auth.Entities;
 using test.Infrastructure.Configuration;
 using test.Infrastructure.Persistence;
+using test.Shared.Contracts;
 using test.Shared.Exceptions;
 
 namespace test.Features.Auth.Services;
@@ -15,48 +16,38 @@ namespace test.Features.Auth.Services;
 public class RefreshTokenService : IRefreshTokenService
 {
     private readonly AppDbContext _dbContext;
-    private readonly JwtOptions _jwtOptions;
+    private readonly AuthenticationOptions _authOptions;
+    private readonly ISecureTokenGenerator _tokenGenerator;
 
-    public RefreshTokenService(AppDbContext dbContext, IOptions<JwtOptions> options)
+    public RefreshTokenService(AppDbContext dbContext, IOptions<AuthenticationOptions> options, ISecureTokenGenerator tokenGenerator)
     {
         _dbContext = dbContext;
-        _jwtOptions = options.Value;
+        _authOptions = options.Value;
+        _tokenGenerator = tokenGenerator;
     }
     public RefreshTokenResult GenerateRefreshToken()
     {
-        var token = GenerateToken();
+        var token = _tokenGenerator.Generate();
 
         return new RefreshTokenResult
         {
             RefreshToken = token,
             TokenHash = HashToken(token),
-            ExpiresAt = DateTimeOffset.UtcNow.AddDays(_jwtOptions.RefreshTokenExpiryDays)
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(_authOptions.RefreshTokenExpiryDays)
         };
     }
-    private string GenerateToken()
-    {
-        var bytes = RandomNumberGenerator.GetBytes(64);
-
-        return Convert.ToBase64String(bytes);
-    }
-
-    public string HashToken(
-        string token)
+    public string HashToken(string token)
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(token));
 
         return Convert.ToHexString(bytes);
     }
-
-    public bool VerifyToken(
-        string token,
-        string tokenHash)
+    public bool VerifyToken(string token,string tokenHash)
     {
         var hash = HashToken(token);
 
         return hash == tokenHash;
     }
-
     public async Task<RefreshToken> GetValidRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var tokenHash = HashToken(refreshToken);
@@ -87,14 +78,12 @@ public class RefreshTokenService : IRefreshTokenService
 
         return entity;
     }
-
     public void RevokeRefreshToken(RefreshToken refreshToken, string reason)
     {
         refreshToken.RevokedAt = DateTimeOffset.UtcNow;
         refreshToken.ReplacedByTokenHash = null;
         refreshToken.RevokedReason = reason;
     }
-
     public async Task RevokeAllUserRefreshTokensAsync(int userId,string reason,CancellationToken cancellationToken = default)
     {
         var refreshTokens = await _dbContext.RefreshTokens
@@ -111,4 +100,10 @@ public class RefreshTokenService : IRefreshTokenService
                 reason);
         }
     }
+    //private string GenerateToken()
+    //{
+    //    var bytes = RandomNumberGenerator.GetBytes(64);
+
+    //    return Convert.ToBase64String(bytes);
+    //}
 }

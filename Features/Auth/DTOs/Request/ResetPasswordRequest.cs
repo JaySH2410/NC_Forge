@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.DTOs;
+﻿namespace test.Features.Auth.DTOs.Request;
 
 public class ResetPasswordRequest
 {

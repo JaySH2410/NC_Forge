@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs;
+using test.Features.Auth.DTOs.Internal;
 using test.Features.Auth.Entities;
 using test.Infrastructure.Configuration;
 
@@ -13,9 +13,7 @@ namespace test.Features.Auth.Services;
 public class JwtTokenService : IJwtTokenService
 {
     private readonly JwtOptions _jwtOptions;
-
-    public JwtTokenService(
-        IOptions<JwtOptions> options)
+    public JwtTokenService(IOptions<JwtOptions> options)
     {
         _jwtOptions = options.Value;
     }

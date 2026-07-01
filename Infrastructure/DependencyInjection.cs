@@ -19,19 +19,24 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         // DbContext
         // Options
+        //Shared
+        ////User
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        ////Security
+        services.AddSingleton<ITokenHasher, TokenHasher>();
+        services.AddSingleton<ISecureTokenGenerator, SecureTokenGenerator>();
         // Services
         ////Authentication
-        services.AddScoped<IPasswordHasher, PasswordHasherService>();
-        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.Configure<AuthenticationOptions>(configuration.GetSection(AuthenticationOptions.SectionName));
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IPasswordResetService, PasswordResetService>();
+        services.AddScoped<IEmailVerificationService, EmailVerificationService>();
         services.AddScoped<IAuthService, AuthService>();
-        //User
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
         // JWT
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));  
-        services
-        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
             var jwtOptions = configuration

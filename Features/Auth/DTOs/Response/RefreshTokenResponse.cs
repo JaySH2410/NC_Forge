@@ -1,4 +1,6 @@
-﻿namespace test.Features.Auth.DTOs;
+﻿using test.Features.Auth.DTOs.Internal;
+
+namespace test.Features.Auth.DTOs.Response;
 
 public class RefreshTokenResponse
 {

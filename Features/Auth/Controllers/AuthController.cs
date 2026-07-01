@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using test.Features.Auth.Constants;
 using test.Features.Auth.Contracts;
 using test.Features.Auth.DTOs;
+using test.Features.Auth.DTOs.Request;
+using test.Features.Auth.DTOs.Response;
 using test.Shared.Entities;
 using test.Shared.Responses;
 
@@ -126,5 +128,32 @@ public class AuthController : ControllerBase
         return Ok(
             ApiResponse.Success(
                 AuthSuccessMessages.PasswordResetSuccessful));
+    }
+
+    [HttpPost("verify-email")]
+    public async Task<ActionResult<ApiResponse>> VerifyEmail(
+    VerifyEmailRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _authService.VerifyEmailAsync(
+            request,
+            cancellationToken);
+
+        return Ok(
+            ApiResponse.Success(
+                AuthSuccessMessages.EmailVerifiedSuccessfully));
+    }
+
+    [Authorize]
+    [HttpPost("resend-verification-email")]
+    public async Task<ActionResult<ApiResponse>> ResendVerificationEmail(
+    CancellationToken cancellationToken)
+    {
+        await _authService.ResendVerificationEmailAsync(
+            cancellationToken);
+
+        return Ok(
+            ApiResponse.Success(
+                AuthSuccessMessages.VerificationEmailSent));
     }
 }

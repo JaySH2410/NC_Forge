@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using test.Features.Auth.Constants;
-using test.Features.Auth.DTOs;
+using test.Features.Auth.DTOs.Request;
 
 namespace test.Features.Auth.Validators;
 

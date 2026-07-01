@@ -1,6 +1,6 @@
-﻿namespace test.Features.Auth.DTOs;
+﻿namespace test.Features.Auth.DTOs.Internal;
 
-public class EmailVerificationTokenResult
+public class PasswordResetTokenResult
 {
     public required string Token { get; init; }
 
