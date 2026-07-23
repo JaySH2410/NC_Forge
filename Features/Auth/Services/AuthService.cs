@@ -6,10 +6,11 @@ using test.Features.Auth.DTOs.Internal;
 using test.Features.Auth.DTOs.Request;
 using test.Features.Auth.DTOs.Response;
 using test.Features.Auth.Entities;
-using test.Features.Auth.Services;
 using test.Infrastructure.Persistence;
 using test.Shared.Contracts;
 using test.Shared.Exceptions;
+
+namespace test.Features.Auth.Services;
 
 public class AuthService : IAuthService
 {
@@ -81,7 +82,6 @@ public class AuthService : IAuthService
             Email = user.Email
         };
 
-        throw new NotImplementedException();
     }
     public async Task<LoginResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {

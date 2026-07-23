@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿// using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using test.Features.Hobby.DTOs;
-using test.Shared.Responses;
+using test.Shared.Models;
 
 namespace test.Features.Hobby.Controllers;
 

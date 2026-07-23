@@ -5,8 +5,8 @@ using test.Features.Auth.Contracts;
 using test.Features.Auth.DTOs;
 using test.Features.Auth.DTOs.Request;
 using test.Features.Auth.DTOs.Response;
-using test.Shared.Entities;
-using test.Shared.Responses;
+// using test.Shared.Entities;
+using test.Shared.Models;
 
 namespace test.Features.Auth.Controllers;
 
