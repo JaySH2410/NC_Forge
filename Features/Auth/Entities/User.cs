@@ -1,7 +1,7 @@
 ﻿using test.Shared.Entities;
 namespace test.Features.Auth.Entities;
 
-public class User : AuditableEntity
+public class User : ActivatableEntity
 {
     public required string FirstName { get; set; }
 
