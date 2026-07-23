@@ -1,6 +1,6 @@
 ﻿namespace test.Shared.Entities;
 
-public abstract class NamedEntity : BaseEntity
+public abstract class NamedEntity : ActivatableEntity
 {
     public required string Name { get; set; }
 
