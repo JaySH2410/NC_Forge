@@ -2,16 +2,17 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using test.Features.Auth.Constants;
 using test.Features.Auth.Entities;
+using test.Infrastructure.Persistence.Configurations.Base;
 
 namespace test.Infrastructure.Persistence.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : ActivatableEntityConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("User");
+        base.Configure(builder);
 
-        builder.HasKey(x => x.Id);
+        builder.ToTable("User");
 
         builder.Property(x => x.FirstName)
             .IsRequired()

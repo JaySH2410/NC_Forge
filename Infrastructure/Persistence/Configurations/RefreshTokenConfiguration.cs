@@ -1,18 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using test.Features.Auth.Entities;
+using test.Infrastructure.Persistence.Configurations.Base;
 
 namespace test.Infrastructure.Persistence.Configurations;
 
 public class RefreshTokenConfiguration
-    : IEntityTypeConfiguration<RefreshToken>
+    : AuditableEntityConfiguration<RefreshToken>
 {
-    public void Configure(
+    public override void Configure(
         EntityTypeBuilder<RefreshToken> builder)
     {
+        base.Configure(builder);
+        
         builder.ToTable("RefreshToken");
-
-        builder.HasKey(x => x.Id);
 
         builder.Property(x => x.TokenHash)
             .IsRequired()

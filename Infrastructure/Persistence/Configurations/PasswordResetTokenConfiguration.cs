@@ -1,18 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using test.Features.Auth.Entities;
+using test.Infrastructure.Persistence.Configurations.Base;
 
 namespace test.Infrastructure.Persistence.Configurations;
 
 public class PasswordResetTokenConfiguration
-    : IEntityTypeConfiguration<PasswordResetToken>
+    : AuditableEntityConfiguration<PasswordResetToken>
 {
-    public void Configure(
+    public override void Configure(
         EntityTypeBuilder<PasswordResetToken> builder)
     {
-        builder.ToTable("PasswordResetToken");
+        base.Configure(builder);
 
-        builder.HasKey(x => x.Id);
+        builder.ToTable("PasswordResetToken");
 
         builder.Property(x => x.TokenHash)
             .HasMaxLength(64)
