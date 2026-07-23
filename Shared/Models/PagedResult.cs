@@ -1,4 +1,4 @@
-﻿namespace test.Shared.Responses;
+﻿namespace test.Shared.Models;
 
 public class PagedResult<T>
 {

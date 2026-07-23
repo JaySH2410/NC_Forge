@@ -24,11 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Data\" />
-    <Folder Include="Docs\API\" />
-    <Folder Include="Docs\Database\" />
-    <Folder Include="Docs\Roadmap\" />
     <Folder Include="Extensions\" />
     <Folder Include="Features\Demo Feature\Constants\" />
     <Folder Include="Features\Demo Feature\Contracts\" />
@@ -38,8 +33,7 @@
     <Folder Include="Features\Demo Feature\Services\" />
     <Folder Include="Features\Demo Feature\Validators\" />
     <Folder Include="Infrastructure\Persistence\Migrations\" />
-    <Folder Include="Shared\Entities\Contracts\" />
-    <Folder Include="Shared\Helpers\" />
+    <Folder Include="Shared\Utilities\" />
     <Folder Include="Shared\Constants\" />
   </ItemGroup>
 
@@ -48,7 +42,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Docs\Architecture\02-Forge-Platform-Layers.md" />
+    <Compile Include="Docs\Architecture\05-Core-Metadata-Concepts.md" />
+    <Compile Include="Docs\Architecture\06-Scope-Model-Overview.md" />
+    <Compile Include="Docs\Architecture\07-Placement-Model.md" />
+    <Compile Remove="Docs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="C:\Users\jsheth\Development\test\test\.editorconfig" />
+    <None Remove="Docs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Docs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Docs\**" />
   </ItemGroup>
 
 </Project>

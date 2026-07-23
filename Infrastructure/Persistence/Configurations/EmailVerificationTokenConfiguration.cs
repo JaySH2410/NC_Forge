@@ -1,18 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using test.Features.Auth.Entities;
+using test.Infrastructure.Persistence.Configurations.Base;
 
 namespace test.Infrastructure.Persistence.Configurations;
 
 public class EmailVerificationTokenConfiguration
-    : IEntityTypeConfiguration<EmailVerificationToken>
+    : AuditableEntityConfiguration<EmailVerificationToken>
 {
-    public void Configure(
+    public override void Configure(
         EntityTypeBuilder<EmailVerificationToken> builder)
     {
-        builder.ToTable("EmailVerificationToken");
+        base.Configure(builder);
 
-        builder.HasKey(x => x.Id);
+        builder.ToTable("EmailVerificationToken");
 
         builder.Property(x => x.TokenHash)
             .HasMaxLength(64)
@@ -30,5 +31,6 @@ public class EmailVerificationTokenConfiguration
             .IsUnique();
 
         builder.HasIndex(x => x.UserId);
+
     }
 }
