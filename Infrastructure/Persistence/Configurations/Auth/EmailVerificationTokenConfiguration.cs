@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using test.Features.Auth.Entities;
-using test.Infrastructure.Persistence.Configurations.Base;
+using Forge.Features.Auth.Entities;
+using Forge.Infrastructure.Persistence.Configurations.Base;
 
-namespace test.Infrastructure.Persistence.Configurations;
+namespace Forge.Infrastructure.Persistence.Configurations.Auth;
 
-public class PasswordResetTokenConfiguration
-    : AuditableEntityConfiguration<PasswordResetToken>
+public class EmailVerificationTokenConfiguration
+    : AuditableEntityConfiguration<EmailVerificationToken>
 {
     public override void Configure(
-        EntityTypeBuilder<PasswordResetToken> builder)
+        EntityTypeBuilder<EmailVerificationToken> builder)
     {
         base.Configure(builder);
 
-        builder.ToTable("PasswordResetToken");
+        builder.ToTable("EmailVerificationToken");
 
         builder.Property(x => x.TokenHash)
             .HasMaxLength(64)
@@ -23,7 +23,7 @@ public class PasswordResetTokenConfiguration
             .IsRequired();
 
         builder.HasOne(x => x.User)
-            .WithMany(x => x.PasswordResetTokens)
+            .WithMany(x => x.EmailVerificationTokens)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -31,5 +31,6 @@ public class PasswordResetTokenConfiguration
             .IsUnique();
 
         builder.HasIndex(x => x.UserId);
+
     }
 }

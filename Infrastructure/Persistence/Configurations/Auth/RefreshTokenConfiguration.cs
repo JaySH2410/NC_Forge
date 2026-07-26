@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using test.Features.Auth.Entities;
-using test.Infrastructure.Persistence.Configurations.Base;
+using Forge.Features.Auth.Entities;
+using Forge.Infrastructure.Persistence.Configurations.Base;
 
-namespace test.Infrastructure.Persistence.Configurations;
+namespace Forge.Infrastructure.Persistence.Configurations.Auth;
 
 public class RefreshTokenConfiguration
     : AuditableEntityConfiguration<RefreshToken>
