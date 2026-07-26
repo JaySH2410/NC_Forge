@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using test.Features.Auth.Constants;
-using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs;
-using test.Features.Auth.DTOs.Internal;
-using test.Features.Auth.DTOs.Request;
-using test.Features.Auth.DTOs.Response;
-using test.Features.Auth.Entities;
-using test.Infrastructure.Persistence;
-using test.Shared.Contracts;
-using test.Shared.Exceptions;
+using Forge.Features.Auth.Constants;
+using Forge.Features.Auth.Contracts;
+using Forge.Features.Auth.DTOs;
+using Forge.Features.Auth.DTOs.Internal;
+using Forge.Features.Auth.DTOs.Request;
+using Forge.Features.Auth.DTOs.Response;
+using Forge.Features.Auth.Entities;
+using Forge.Infrastructure.Persistence;
+using Forge.Shared.Contracts;
+using Forge.Shared.Exceptions;
 
-namespace test.Features.Auth.Services;
+namespace Forge.Features.Auth.Services;
 
 public class AuthService : IAuthService
 {

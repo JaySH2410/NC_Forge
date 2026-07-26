@@ -1,9 +1,9 @@
 ﻿// using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using test.Features.Hobby.DTOs;
-using test.Shared.Models;
+using Forge.Features.Hobby.DTOs;
+using Forge.Shared.Models;
 
-namespace test.Features.Hobby.Controllers;
+namespace Forge.Features.Hobby.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

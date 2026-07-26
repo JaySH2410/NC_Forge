@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using test.Features.Auth.DTOs.Request;
+using Forge.Features.Auth.DTOs.Request;
 
-namespace test.Features.Auth.Validators;
+namespace Forge.Features.Auth.Validators;
 
 public class ForgotPasswordValidator
     : AbstractValidator<ForgotPasswordRequest>

@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Forge</AssemblyName>
+    <RootNamespace>Forge</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +27,11 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Features\MetaSchema\Contracts\" />
+    <Folder Include="Features\MetaSchema\Controllers\" />
+    <Folder Include="Features\MetaSchema\DTOs\" />
+    <Folder Include="Features\MetaSchema\Services\" />
+    <Folder Include="Features\MetaSchema\Validators\" />
     <Folder Include="Features\Demo Feature\Constants\" />
     <Folder Include="Features\Demo Feature\Contracts\" />
     <Folder Include="Features\Demo Feature\Controllers\" />
@@ -32,6 +39,7 @@
     <Folder Include="Features\Demo Feature\Entities\" />
     <Folder Include="Features\Demo Feature\Services\" />
     <Folder Include="Features\Demo Feature\Validators\" />
+    <Folder Include="Infrastructure\Persistence\Configurations\Auth\" />
     <Folder Include="Infrastructure\Persistence\Migrations\" />
     <Folder Include="Shared\Utilities\" />
     <Folder Include="Shared\Constants\" />

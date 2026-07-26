@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
-using test.Features.Auth.Constants;
-using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs.Internal;
-using test.Features.Auth.Entities;
-using test.Infrastructure.Configuration;
-using test.Infrastructure.Persistence;
-using test.Shared.Contracts;
-using test.Shared.Exceptions;
+using Forge.Features.Auth.Constants;
+using Forge.Features.Auth.Contracts;
+using Forge.Features.Auth.DTOs.Internal;
+using Forge.Features.Auth.Entities;
+using Forge.Infrastructure.Configuration;
+using Forge.Infrastructure.Persistence;
+using Forge.Shared.Contracts;
+using Forge.Shared.Exceptions;
 
-namespace test.Features.Auth.Services;
+namespace Forge.Features.Auth.Services;
 
 public class EmailVerificationService : IEmailVerificationService
 {

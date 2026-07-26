@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.DTOs.Response;
+﻿namespace Forge.Features.Auth.DTOs.Response;
 
 public class CurrentUserResponse
 {

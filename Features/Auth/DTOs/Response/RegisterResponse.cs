@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.DTOs;
+﻿namespace Forge.Features.Auth.DTOs;
 
 public class RegisterResponse
 {

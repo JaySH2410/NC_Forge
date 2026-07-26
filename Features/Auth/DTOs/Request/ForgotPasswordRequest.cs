@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.DTOs.Request;
+﻿namespace Forge.Features.Auth.DTOs.Request;
 
 public class ForgotPasswordRequest
 {

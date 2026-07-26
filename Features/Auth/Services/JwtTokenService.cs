@@ -3,12 +3,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs.Internal;
-using test.Features.Auth.Entities;
-using test.Infrastructure.Configuration;
+using Forge.Features.Auth.Contracts;
+using Forge.Features.Auth.DTOs.Internal;
+using Forge.Features.Auth.Entities;
+using Forge.Infrastructure.Configuration;
 
-namespace test.Features.Auth.Services;
+namespace Forge.Features.Auth.Services;
 
 public class JwtTokenService : IJwtTokenService
 {

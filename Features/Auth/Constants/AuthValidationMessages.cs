@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.Constants;
+﻿namespace Forge.Features.Auth.Constants;
 
 public class AuthValidationMessages
 {

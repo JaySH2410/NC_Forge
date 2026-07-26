@@ -1,4 +1,4 @@
-﻿namespace test.Shared.Exceptions;
+﻿namespace Forge.Shared.Exceptions;
 
 public class ValidationException : Exception
 {

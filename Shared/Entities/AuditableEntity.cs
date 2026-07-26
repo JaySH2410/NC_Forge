@@ -1,4 +1,4 @@
-﻿namespace test.Shared.Entities;
+﻿namespace Forge.Shared.Entities;
 
 public abstract class AuditableEntity : BaseEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace test.Features.Auth.DTOs.Internal;
+﻿namespace Forge.Features.Auth.DTOs.Internal;
 
 public class PasswordResetTokenResult
 {

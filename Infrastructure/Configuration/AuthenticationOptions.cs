@@ -1,4 +1,4 @@
-﻿namespace test.Infrastructure.Configuration;
+﻿namespace Forge.Infrastructure.Configuration;
 
 public class AuthenticationOptions
 {

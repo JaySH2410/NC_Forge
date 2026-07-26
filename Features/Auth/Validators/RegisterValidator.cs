@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 
-using test.Features.Auth.Constants;
-using test.Features.Auth.DTOs.Request;
+using Forge.Features.Auth.Constants;
+using Forge.Features.Auth.DTOs.Request;
 
-namespace test.Features.Auth.Validators;
+namespace Forge.Features.Auth.Validators;
 
 public class RegisterValidator
     : AbstractValidator<RegisterRequest>

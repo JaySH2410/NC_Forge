@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using test.Features.Auth.Constants;
-using test.Features.Auth.Contracts;
-using test.Features.Auth.DTOs;
-using test.Features.Auth.DTOs.Request;
-using test.Features.Auth.DTOs.Response;
-// using test.Shared.Entities;
-using test.Shared.Models;
+using Forge.Features.Auth.Constants;
+using Forge.Features.Auth.Contracts;
+using Forge.Features.Auth.DTOs;
+using Forge.Features.Auth.DTOs.Request;
+using Forge.Features.Auth.DTOs.Response;
+// using Forge.Shared.Entities;
+using Forge.Shared.Models;
 
-namespace test.Features.Auth.Controllers;
+namespace Forge.Features.Auth.Controllers;
 
 [ApiController]
 [Route("api/auth")]

@@ -1,10 +1,11 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
-using test.Infrastructure;
-using test.Infrastructure.Persistence;
-using test.Middleware;
-using test.Shared.Filters;
+using Forge.Infrastructure;
+using Forge.Infrastructure.Persistence;
+using Forge.Infrastructure.Persistence.Seeds;
+using Forge.Middleware;
+using Forge.Shared.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+
 var app = builder.Build();
+
 
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -69,5 +72,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+await DatabaseSeeder.SeedAsync(app.Services);
 
 app.Run();

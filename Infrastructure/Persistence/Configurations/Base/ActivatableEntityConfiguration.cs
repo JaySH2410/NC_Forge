@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using test.Shared.Entities;
+using Forge.Shared.Entities;
 
-namespace test.Infrastructure.Persistence.Configurations.Base;
+namespace Forge.Infrastructure.Persistence.Configurations.Base;
 
 public abstract class ActivatableEntityConfiguration<TEntity>
     : AuditableEntityConfiguration<TEntity>

@@ -1,4 +1,4 @@
-﻿namespace test.Features.Hobby.DTOs;
+﻿namespace Forge.Features.Hobby.DTOs;
 
 public class CreateHobbyRequest
 {

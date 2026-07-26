@@ -1,5 +1,5 @@
-﻿using test.Shared.Entities;
-namespace test.Features.Auth.Entities;
+﻿using Forge.Shared.Entities;
+namespace Forge.Features.Auth.Entities;
 
 public class User : ActivatableEntity
 {

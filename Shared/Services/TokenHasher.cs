@@ -1,8 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using test.Shared.Contracts;
+using Forge.Shared.Contracts;
 
-namespace test.Shared.Services;
+namespace Forge.Shared.Services;
 
 public class TokenHasher : ITokenHasher
 {

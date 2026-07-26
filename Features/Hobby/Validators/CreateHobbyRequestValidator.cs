@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using test.Features.Hobby.DTOs;
+using Forge.Features.Hobby.DTOs;
 
-namespace test.Features.Hobby.Validators;
+namespace Forge.Features.Hobby.Validators;
 
 public class CreateHobbyRequestValidator
     : AbstractValidator<CreateHobbyRequest>

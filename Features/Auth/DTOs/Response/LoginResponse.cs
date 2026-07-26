@@ -1,6 +1,6 @@
-﻿using test.Features.Auth.DTOs.Internal;
+﻿using Forge.Features.Auth.DTOs.Internal;
 
-namespace test.Features.Auth.DTOs.Response;
+namespace Forge.Features.Auth.DTOs.Response;
 
 public class LoginResponse
 {

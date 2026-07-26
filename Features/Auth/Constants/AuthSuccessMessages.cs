@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace test.Features.Auth.Constants;
+namespace Forge.Features.Auth.Constants;
 
 public static class AuthSuccessMessages
 {

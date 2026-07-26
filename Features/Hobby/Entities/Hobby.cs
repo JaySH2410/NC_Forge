@@ -1,6 +1,6 @@
-﻿using test.Shared.Entities;
+﻿using Forge.Shared.Entities;
 
-namespace test.Features.Hobbies.Entities;
+namespace Forge.Features.Hobbies.Entities;
 
 public class Hobby : BaseEntity
 {

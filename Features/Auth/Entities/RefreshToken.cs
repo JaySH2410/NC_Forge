@@ -1,6 +1,6 @@
-﻿using test.Shared.Entities;
+﻿using Forge.Shared.Entities;
 
-namespace test.Features.Auth.Entities;
+namespace Forge.Features.Auth.Entities;
 
 public class RefreshToken : AuditableEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace test.Shared.Contracts;
+﻿namespace Forge.Shared.Contracts;
 
 public interface ITokenHasher
 {

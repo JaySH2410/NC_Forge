@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using test.Features.Auth.Entities;
-using test.Shared.Entities;
+using Forge.Features.Auth.Entities;
+using Forge.Features.MetaSchema.Entities;
+using Forge.Shared.Entities;
 
-namespace test.Infrastructure.Persistence;
+namespace Forge.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
 {

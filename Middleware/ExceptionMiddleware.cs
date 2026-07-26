@@ -1,8 +1,8 @@
 ﻿// using System.Text.Json;
-using test.Shared.Exceptions;
-using test.Shared.Models;
+using Forge.Shared.Exceptions;
+using Forge.Shared.Models;
 
-namespace test.Middleware;
+namespace Forge.Middleware;
 
 public class ExceptionMiddleware
 {

@@ -1,4 +1,4 @@
-﻿namespace test.Features.Hobby.Constants;
+﻿namespace Forge.Features.Hobby.Constants;
 
 public static class HobbyConstants
 {

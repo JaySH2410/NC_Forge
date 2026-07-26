@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ValidationException = test.Shared.Exceptions.ValidationException;
+using ValidationException = Forge.Shared.Exceptions.ValidationException;
 
-namespace test.Shared.Filters;
+namespace Forge.Shared.Filters;
 
 public class ValidationFilter : IAsyncActionFilter
 {

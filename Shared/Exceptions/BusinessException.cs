@@ -1,3 +1,3 @@
-﻿namespace test.Shared.Exceptions;
+﻿namespace Forge.Shared.Exceptions;
 
 public class BusinessException(string message) : Exception(message);

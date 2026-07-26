@@ -1,4 +1,4 @@
-﻿namespace test.Shared.Models;
+﻿namespace Forge.Shared.Models;
 
 public class ApiResponse
 {

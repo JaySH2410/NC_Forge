@@ -1,8 +1,8 @@
-﻿using test.Features.Auth.DTOs;
-using test.Features.Auth.DTOs.Request;
-using test.Features.Auth.DTOs.Response;
+﻿using Forge.Features.Auth.DTOs;
+using Forge.Features.Auth.DTOs.Request;
+using Forge.Features.Auth.DTOs.Response;
 
-namespace test.Features.Auth.Contracts;
+namespace Forge.Features.Auth.Contracts;
 
 public interface IAuthService
 {

@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using test.Shared.Contracts;
+using Forge.Shared.Contracts;
 
-namespace test.Shared.Services;
+namespace Forge.Shared.Services;
 
 public class CurrentUserService : ICurrentUserService
 {

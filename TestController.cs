@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using test.Shared.Exceptions;
+using Forge.Shared.Exceptions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace test;
+namespace Forge;
 
 [Route("api/[controller]")]
 [ApiController]

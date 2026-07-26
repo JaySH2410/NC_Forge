@@ -2,13 +2,13 @@
 using Microsoft.IdentityModel.Tokens;
 
 using System.Text;
-using test.Features.Auth.Contracts;
-using test.Features.Auth.Services;
-using test.Infrastructure.Configuration;
-using test.Shared.Contracts;
-using test.Shared.Services;
+using Forge.Features.Auth.Contracts;
+using Forge.Features.Auth.Services;
+using Forge.Infrastructure.Configuration;
+using Forge.Shared.Contracts;
+using Forge.Shared.Services;
 
-namespace test.Infrastructure;
+namespace Forge.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -18,6 +18,7 @@ public static class DependencyInjection
     {
         services.AddHttpContextAccessor();
         // DbContext
+        services.Configure<DatabaseSettings>(configuration.GetSection("Database"));
         // Options
         //Shared
         ////User

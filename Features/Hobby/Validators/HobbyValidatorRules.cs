@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using test.Features.Hobby.Constants;
+using Forge.Features.Hobby.Constants;
 
-namespace test.Features.Hobby.Validators;
+namespace Forge.Features.Hobby.Validators;
 
 public static class HobbyValidatorRules
 {
