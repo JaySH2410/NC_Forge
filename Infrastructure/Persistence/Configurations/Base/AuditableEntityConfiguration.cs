@@ -19,5 +19,9 @@ public abstract class AuditableEntityConfiguration<TEntity>
         builder.Property(x => x.UpdatedAt);
 
         builder.Property(x => x.UpdatedBy);
+
+        builder.Property(x => x.DeletedAt);
+        
+        builder.Property(x => x.DeletedBy);
     }
 }

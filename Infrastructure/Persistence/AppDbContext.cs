@@ -32,23 +32,34 @@ public class AppDbContext : DbContext
     }
     private void UpdateAuditFields()
     {
-        var entries = ChangeTracker.Entries<AuditableEntity>();
-
         var utcNow = DateTimeOffset.UtcNow;
 
-        foreach (var entry in entries)
+       foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
-            if (entry.State == EntityState.Added)
+           switch (entry.State)
             {
+               case EntityState.Added:
                 entry.Entity.CreatedAt = utcNow;
-                entry.Entity.CreatedBy = null;
-            }
-            else if (entry.State == EntityState.Modified)
-            {
+                   entry.Entity.CreatedBy = null; // Current user
+                   break;
+
+               case EntityState.Modified:
                 entry.Property(x => x.CreatedAt).IsModified = false;
                 entry.Property(x => x.CreatedBy).IsModified = false;
+
                 entry.Entity.UpdatedAt = utcNow;
-                entry.Entity.UpdatedBy = null;
+                   entry.Entity.UpdatedBy = null; // Current user
+                   break;
+
+               case EntityState.Deleted:
+                   entry.State = EntityState.Modified;
+
+                   entry.Property(x => x.CreatedAt).IsModified = false;
+                   entry.Property(x => x.CreatedBy).IsModified = false;
+
+                   entry.Entity.DeletedAt = utcNow;
+                   entry.Entity.DeletedBy = null; // Current user
+                   break;
             }
         }
     }

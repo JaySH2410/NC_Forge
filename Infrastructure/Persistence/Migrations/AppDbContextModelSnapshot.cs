@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using test.Infrastructure.Persistence;
 
 #nullable disable
 
@@ -37,6 +36,12 @@ namespace Forge.Infrastructure.Persistence.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("datetimeoffset");
 
@@ -67,7 +72,7 @@ namespace Forge.Infrastructure.Persistence.Migrations
                     b.ToTable("EmailVerificationToken", (string)null);
                 });
 
-            modelBuilder.Entity("test.Features.Auth.Entities.PasswordResetToken", b =>
+            modelBuilder.Entity("Forge.Features.Auth.Entities.PasswordResetToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,6 +85,12 @@ namespace Forge.Infrastructure.Persistence.Migrations
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("datetimeoffset");
@@ -124,6 +135,12 @@ namespace Forge.Infrastructure.Persistence.Migrations
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("datetimeoffset");
@@ -177,6 +194,12 @@ namespace Forge.Infrastructure.Persistence.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -229,9 +252,9 @@ namespace Forge.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("test.Features.Auth.Entities.PasswordResetToken", b =>
+            modelBuilder.Entity("Forge.Features.Auth.Entities.PasswordResetToken", b =>
                 {
-                    b.HasOne("test.Features.Auth.Entities.User", "User")
+                    b.HasOne("Forge.Features.Auth.Entities.User", "User")
                         .WithMany("PasswordResetTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -240,9 +263,9 @@ namespace Forge.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("test.Features.Auth.Entities.RefreshToken", b =>
+            modelBuilder.Entity("Forge.Features.Auth.Entities.RefreshToken", b =>
                 {
-                    b.HasOne("test.Features.Auth.Entities.User", "User")
+                    b.HasOne("Forge.Features.Auth.Entities.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
