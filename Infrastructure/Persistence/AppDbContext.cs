@@ -16,6 +16,9 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<EmailVerificationToken> EmailVerificationTokens =>Set<EmailVerificationToken>();
+    public DbSet<Application> Applications => Set<Application>();
+    public DbSet<MetaObject> MetaObjects => Set<MetaObject>();
+    public DbSet<MetaObjectRelationship> MetaObjectRelationships => Set<MetaObjectRelationship>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -32,22 +35,22 @@ public class AppDbContext : DbContext
     }
     private void UpdateAuditFields()
     {
-        var utcNow = DateTimeOffset.UtcNow;
+       var utcNow = DateTimeOffset.UtcNow;
 
        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
-        {
+       {
            switch (entry.State)
-            {
+           {
                case EntityState.Added:
-                entry.Entity.CreatedAt = utcNow;
+                   entry.Entity.CreatedAt = utcNow;
                    entry.Entity.CreatedBy = null; // Current user
                    break;
 
                case EntityState.Modified:
-                entry.Property(x => x.CreatedAt).IsModified = false;
-                entry.Property(x => x.CreatedBy).IsModified = false;
+                   entry.Property(x => x.CreatedAt).IsModified = false;
+                   entry.Property(x => x.CreatedBy).IsModified = false;
 
-                entry.Entity.UpdatedAt = utcNow;
+                   entry.Entity.UpdatedAt = utcNow;
                    entry.Entity.UpdatedBy = null; // Current user
                    break;
 
@@ -60,8 +63,8 @@ public class AppDbContext : DbContext
                    entry.Entity.DeletedAt = utcNow;
                    entry.Entity.DeletedBy = null; // Current user
                    break;
-            }
-        }
+           }
+       }
     }
 }
 
