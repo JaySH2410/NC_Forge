@@ -33,6 +33,9 @@ public static class DependencyInjection
         services.AddScoped<IPasswordResetService, PasswordResetService>();
         services.AddScoped<IEmailVerificationService, EmailVerificationService>();
         services.AddScoped<IAuthService, AuthService>();
+        ////MetaSchema
+        services.AddScoped<IMetaSchemaService, MetaSchemaService>();
+        services.AddScoped<IGraphTraversalService, GraphTraversalService>();
         // JWT
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));  
         services.AddScoped<IJwtTokenService, JwtTokenService>();
