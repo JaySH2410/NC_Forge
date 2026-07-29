@@ -4,10 +4,11 @@
 name: Build On Local
 
 on:
-  push:
-    branches: [ "main", "develop", "feature/**" ]
-  pull_request:
-    branches: [ "main", "develop" ]
+  workflow_dispatch:
+  # push:
+  #   branches: [ "main", "develop", "feature/**" ]
+  # pull_request:
+  #   branches: [ "main", "develop" ]
 
 jobs:
   build:
@@ -26,10 +27,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
       
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v4
+    #   with:
+    #     dotnet-version: 10.0.x
         
     - name: Restore Dependencies
       run: dotnet restore Forge.slnx
@@ -46,5 +47,5 @@ jobs:
     - name: Upload Publish Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: forge
+        name: forge-api
         path: ./publish
