@@ -32,10 +32,10 @@ jobs:
         dotnet-version: 10.0.x
         
     - name: Restore Dependencies
-      run: dotnet restore Forge.sln
+      run: dotnet restore Forge.slnx
       
     - name: Build
-      run: dotnet build Forge.sln --configuration Release --no-restore
+      run: dotnet build Forge.slnx --configuration Release --no-restore
       
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
