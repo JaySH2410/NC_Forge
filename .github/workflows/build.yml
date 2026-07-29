@@ -39,3 +39,6 @@ jobs:
       
     # - name: Test
     #   run: dotnet test Forge.slnx --configuration Release --no-build
+    
+    - name: Publish Application
+      run: dotnet publish Forge.csproj --configuration Release --no-build --output ./publish
