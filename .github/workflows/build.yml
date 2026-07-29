@@ -17,6 +17,14 @@ jobs:
     steps:
     - name: Checkout Source
       uses: actions/checkout@v4
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -24,10 +32,10 @@ jobs:
         dotnet-version: 10.0.x
         
     - name: Restore Dependencies
-      run: dotnet restore
+      run: dotnet restore Forge.sln
       
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Forge.sln --configuration Release --no-restore
       
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
