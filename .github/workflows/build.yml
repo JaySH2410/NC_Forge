@@ -38,4 +38,4 @@ jobs:
       run: dotnet build Forge.slnx --configuration Release --no-restore
       
     # - name: Test
-    #   run: dotnet test --no-build --verbosity normal
+    #   run: dotnet test Forge.slnx --configuration Release --no-build
