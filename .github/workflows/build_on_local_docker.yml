@@ -1,6 +1,6 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-name: Build Docker Image
+name: Build Docker Image for Forge
 
 permissions:
   contents: read
@@ -41,7 +41,7 @@ jobs:
         run: dotnet build Forge.slnx --configuration Release --no-restore
 
       - name: Build Docker Image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/forge-api:latest .
+        run: docker build -t ghcr.io/jaysh2410/forge-api:latest .
 
       - name: Push Docker Image
-        run: docker push ghcr.io/${{ github.repository_owner }}/forge-api:latest
+        run: docker push ghcr.io/jaysh2410/forge-api:latest
