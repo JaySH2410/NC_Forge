@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Forge.Features.MetaSchema.Services;
 
 //This Service is responsible for validating the new MetaSchema (Objects and Relationships)
-//which is being created or updated; before it is persisted in the database.
+//which is being created or updated or deleted; before it is persisted in the database.
+// only creation for now
 //It will check for the following:
 //1. ValidateCreateObjectAsync
 //2. ValidateCreateRelationshipAsync
