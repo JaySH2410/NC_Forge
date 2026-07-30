@@ -88,6 +88,27 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
     }
 
+    public async Task ValidateUpdateObjectAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task ValidateDeleteObjectAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task ValidateTerminateObjectAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+    
     public async Task ValidateCreateRelationshipAsync(
         MetaObjectRelationship relationship,
         CancellationToken cancellationToken = default)
@@ -135,4 +156,26 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 new Dictionary<string, string[]> { { "Relationship", ["An identical relationship already exists."] } });
         }
     }
+
+    public async Task ValidateUpdateRelationshipAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task ValidateDeleteRelationshipAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task ValidateTerminateRelationshipAsync(
+        MetaObject metaObject,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
 }
