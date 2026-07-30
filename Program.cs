@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
@@ -50,6 +51,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.MapHealthChecks("/health");
 
 app.UseMiddleware<ExceptionMiddleware>();
 
