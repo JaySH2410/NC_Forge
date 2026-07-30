@@ -6,7 +6,7 @@ namespace Forge.Infrastructure.Persistence.Configurations.MetaSchema;
 
 public class ApplicationConfiguration: NamedEntityConfiguration<Application>
 {
-    public void Configure(EntityTypeBuilder<Application> builder)
+    public override void Configure(EntityTypeBuilder<Application> builder)
     {
         base.Configure(builder);
         builder.Property(x => x.Version)
