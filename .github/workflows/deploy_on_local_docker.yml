@@ -45,7 +45,10 @@ jobs:
       - name: Health Check
         shell: powershell
         run: |
-          $response = Invoke-WebRequest http://localhost:8080/health
-          if ($response.StatusCode -ne 200) {
-              throw "Health check failed."
+          $status = curl.exe -s -o NUL -w "%{http_code}" http://localhost:8080/health
+
+          if ($status -ne "200") {
+            throw "Health check failed. HTTP Status: $status"
           }
+
+          Write-Host "Health check passed."
