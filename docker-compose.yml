@@ -5,11 +5,7 @@ services:
   forge-api:
     container_name: forge-api
 
-    image: forge-api:latest
-
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/jaysh2410/forge-api:latest
 
     ports:
       - "8080:8080"
