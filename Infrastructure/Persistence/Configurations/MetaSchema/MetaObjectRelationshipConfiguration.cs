@@ -62,5 +62,8 @@ public sealed class MetaObjectRelationshipConfiguration : NamedEntityConfigurati
         builder.HasIndex(x => new { x.End1Uid, x.RelTypeUid });
 
         builder.HasIndex(x => new { x.End2Uid, x.RelTypeUid });
+        
+        builder.HasIndex(x => new { x.End1Uid, x.RelTypeUid, x.End2Uid })
+            .IsUnique();
     }
 }
