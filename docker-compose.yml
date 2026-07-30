@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+
+  forge-api:
+    container_name: forge-api
+
+    image: forge-api:latest
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+    restart: unless-stopped
