@@ -19,16 +19,13 @@ jobs:
         path: deployment
 
     - name: Show Files
-      shell: pwsh
       run: |
         Get-ChildItem deployment -Recurse
-        
+    
     - name: Create Deployment Folder
-      shell: pwsh
       run: |
         New-Item -ItemType Directory -Force -Path "C:\Jay\Deployments\Forge"
-        
+    
     - name: Copy Files
-      shell: pwsh
       run: |
         Copy-Item "deployment\*" "C:\Jay\Deployments\Forge" -Recurse -Force
