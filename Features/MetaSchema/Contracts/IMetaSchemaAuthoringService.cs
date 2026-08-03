@@ -1,3 +1,4 @@
+using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 
 namespace Forge.Features.MetaSchema.Contracts;
@@ -9,15 +10,15 @@ public interface IMetaSchemaAuthoringService
         CancellationToken cancellationToken = default);
 
     Task<MetaObject> UpdateObjectAsync(
-        MetaObject metaObject,
+        UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default);
 
     Task DeactivateObjectAsync(
-        Guid objUid,
+        UuidRequest request,
         CancellationToken cancellationToken = default);
 
     Task TerminateObjectAsync(
-        Guid objUid,
+        UuidRequest request,
         CancellationToken cancellationToken = default);
 
     Task<MetaObjectRelationship> CreateRelationshipAsync(
@@ -25,14 +26,18 @@ public interface IMetaSchemaAuthoringService
         CancellationToken cancellationToken = default);
 
     Task<MetaObjectRelationship> UpdateRelationshipAsync(
-        MetaObjectRelationship relationship,
+        UpdateMetaObjectRelationshipRequest relationship,
         CancellationToken cancellationToken = default);
 
     Task DeactivateRelationshipAsync(
-        Guid relationshipUid,
+        UuidRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task ActivateRelationshipAsync(
+        UuidRequest request,
         CancellationToken cancellationToken = default);
 
     Task TerminateRelationshipAsync(
-        Guid relationshipUid,
+        UuidRequest request,
         CancellationToken cancellationToken = default);
 }
