@@ -1,8 +1,10 @@
 using Forge.Features.MetaSchema.Contracts;
+using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using static Forge.Features.MetaSchema.Constants.MetaSchemaConstants;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -89,17 +91,39 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
     }
 
     public async Task ValidateUpdateObjectAsync(
-        MetaObject metaObject,
+        MetaObject existingObject,
+        UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(request.DisplayName))
+        {
+            request.DisplayName = existingObject.Name;
+        }
+        await Task.CompletedTask;
     }
 
-    public async Task ValidateDeleteObjectAsync(
-        MetaObject metaObject,
+    public async Task ValidateDeactivateObjectAsync(
+        MetaObject existingObject,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (!existingObject.IsActive)
+        {
+            throw new BusinessException(
+                $"Object '{existingObject.Uuid}' | {existingObject.DisplayName} is already deleted/inactive.");
+        }
+        await Task.CompletedTask;
+    }
+
+    public async Task ValidateActivateObjectAsync(
+        MetaObject existingObject,
+        CancellationToken cancellationToken = default)
+    {
+        if (existingObject.IsActive)
+        {
+            throw new BusinessException(
+                $"Object '{existingObject.Uuid}' | {existingObject.DisplayName} is already restored/active.");
+        }
+        await Task.CompletedTask;
     }
 
     public async Task ValidateTerminateObjectAsync(
@@ -158,21 +182,43 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
     }
 
     public async Task ValidateUpdateRelationshipAsync(
-        MetaObject metaObject,
+        MetaObjectRelationship existingRel,
+        UpdateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(request.DisplayName))
+        {
+            request.DisplayName = existingRel.Name;
+        }
+        await Task.CompletedTask;
     }
 
-    public async Task ValidateDeleteRelationshipAsync(
-        MetaObject metaObject,
+    public async Task ValidateDeactivateRelationshipAsync(
+        MetaObjectRelationship existingRel,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (!existingRel.IsActive)
+        {
+            throw new BusinessException(
+                $"Relationship '{existingRel.Uuid}' | {existingRel.DisplayName} is already deleted/inactive.");
+        }
+        await Task.CompletedTask;
+    }
+
+    public async Task ValidateActivateRelationshipAsync(
+        MetaObjectRelationship existingRel,
+        CancellationToken cancellationToken = default)
+    {
+        if (existingRel.IsActive)
+        {
+            throw new BusinessException(
+                $"Relationship '{existingRel.Uuid}' | {existingRel.DisplayName} is already restored/active.");
+        }
+        await Task.CompletedTask;
     }
 
     public async Task ValidateTerminateRelationshipAsync(
-        MetaObject metaObject,
+        MetaObjectRelationship existingRel,
         CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();

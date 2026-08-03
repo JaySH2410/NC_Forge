@@ -1,3 +1,4 @@
+using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 
 namespace Forge.Features.MetaSchema.Contracts;
@@ -10,14 +11,19 @@ public interface IMetaSchemaValidationService
 
     Task ValidateUpdateObjectAsync(
         MetaObject metaObject,
+        UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default);
 
-    Task ValidateDeleteObjectAsync(
-        MetaObject metaObject,
+    Task ValidateDeactivateObjectAsync(
+        MetaObject existingObject,
+        CancellationToken cancellationToken = default);
+
+    Task ValidateActivateObjectAsync(
+        MetaObject existingObject,
         CancellationToken cancellationToken = default);
 
     Task ValidateTerminateObjectAsync(
-        MetaObject metaObject,
+        MetaObject existingObject,
         CancellationToken cancellationToken = default);
 
     Task ValidateCreateRelationshipAsync(
@@ -25,14 +31,19 @@ public interface IMetaSchemaValidationService
         CancellationToken cancellationToken = default);
 
     Task ValidateUpdateRelationshipAsync(
-        MetaObject metaObject,
+        MetaObjectRelationship existingRel,
+        UpdateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default);
 
-    Task ValidateDeleteRelationshipAsync(
-        MetaObject metaObject,
+    Task ValidateDeactivateRelationshipAsync(
+        MetaObjectRelationship existingRel,
+        CancellationToken cancellationToken = default);
+
+    Task ValidateActivateRelationshipAsync(
+        MetaObjectRelationship existingRel,
         CancellationToken cancellationToken = default);
 
     Task ValidateTerminateRelationshipAsync(
-        MetaObject metaObject,
+        MetaObjectRelationship existingRel,
         CancellationToken cancellationToken = default);
 }
