@@ -13,6 +13,10 @@ public interface IMetaSchemaAuthoringService
         UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default);
 
+    Task ActivateObjectAsync(
+        UuidRequest request,
+        CancellationToken cancellationToken = default);
+
     Task DeactivateObjectAsync(
         UuidRequest request,
         CancellationToken cancellationToken = default);
