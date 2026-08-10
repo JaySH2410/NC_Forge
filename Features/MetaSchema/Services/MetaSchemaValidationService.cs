@@ -39,7 +39,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         //Checking for the duplicate Uuid 
-        if (await _metaSchemaService.ExistsAsync(metaObject.Uuid, cancellationToken))
+        if (await _metaSchemaService.ObjectExistsAsync(metaObject.Uuid, cancellationToken))
         {
             throw new ValidationException(
                 new Dictionary<string, string[]>
@@ -71,7 +71,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 new Dictionary<string, string[]> { { "ObjTypeUid", ["Object Type is required."] } });
         }
 
-        var exists = await _metaSchemaService.ExistsAsync(
+        var exists = await _metaSchemaService.ObjectExistsAsync(
             metaObject.ObjTypeUid.Value,
             cancellationToken);
 
@@ -138,7 +138,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         CancellationToken cancellationToken = default)
     {
         // End1 must exist
-        if (!await _metaSchemaService.ExistsAsync(
+        if (!await _metaSchemaService.ObjectExistsAsync(
                 relationship.End1Uid,
                 cancellationToken))
         {
@@ -147,7 +147,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         // End2 must exist
-        if (!await _metaSchemaService.ExistsAsync(
+        if (!await _metaSchemaService.ObjectExistsAsync(
                 relationship.End2Uid,
                 cancellationToken))
         {
@@ -156,7 +156,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         // Relationship Type must exist
-        if (!await _metaSchemaService.ExistsAsync(
+        if (!await _metaSchemaService.ObjectExistsAsync(
                 relationship.RelTypeUid,
                 cancellationToken))
         {
