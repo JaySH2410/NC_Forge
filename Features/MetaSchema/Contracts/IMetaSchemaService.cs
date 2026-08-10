@@ -8,13 +8,23 @@ public interface IMetaSchemaService
       Guid objUid,
       CancellationToken cancellationToken = default);
 
+    Task<MetaObjectRelationship?> GetRelationshipAsync(
+      Guid relUid,
+      CancellationToken cancellationToken = default);
+
     Task<MetaObject?> GetObjectByNameAsync(
         string name,
         CancellationToken cancellationToken = default);
 
-    Task<bool> ExistsAsync(
+    Task<MetaObjectRelationship?> GetRelationshipByNameAsync(
+       string name,
+       CancellationToken cancellationToken = default);
         Guid objUid,
         CancellationToken cancellationToken = default);
+
+    Task<bool> RelationshipExistsAsync(
+       Guid relUid,
+       CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<MetaObject>> GetRelatedObjectsAsync(
         Guid sourceUid,
@@ -30,4 +40,9 @@ public interface IMetaSchemaService
         Guid sourceUid,
         Guid relationshipTypeUid,
         CancellationToken cancellationToken = default);
+
+    Task<MetaObject?> GetSingleReferencingObjectAsync(
+       Guid targetUid,
+       Guid relationshipTypeUid,
+       CancellationToken cancellationToken = default);
 }
