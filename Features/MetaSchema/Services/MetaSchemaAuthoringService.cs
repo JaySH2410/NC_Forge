@@ -174,7 +174,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
 
-        await _validationService.ValidateUpdateRelationshipAsync(
+            await _validationService.ValidateUpdateRelationshipAsync(
             existingRel,
             request,
             cancellationToken);
@@ -214,7 +214,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
 
-            await _validationService.ValidateActivateRelationshipAsync(
+        await _validationService.ValidateActivateRelationshipAsync(
                     existingRel,
                     cancellationToken);
 
