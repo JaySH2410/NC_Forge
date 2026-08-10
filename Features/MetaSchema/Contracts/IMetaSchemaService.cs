@@ -19,6 +19,9 @@ public interface IMetaSchemaService
     Task<MetaObjectRelationship?> GetRelationshipByNameAsync(
        string name,
        CancellationToken cancellationToken = default);
+
+
+    Task<bool> ObjectExistsAsync(
         Guid objUid,
         CancellationToken cancellationToken = default);
 
