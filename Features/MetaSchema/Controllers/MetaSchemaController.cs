@@ -24,6 +24,8 @@ public class MetaSchemaController : ControllerBase
     [HttpGet("objects/{uuid}")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> GetObject(
         Guid uuid,
         CancellationToken cancellationToken)
@@ -57,6 +59,8 @@ public class MetaSchemaController : ControllerBase
     [HttpGet("objects")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> GetObjectByName(
         string name,
         CancellationToken cancellationToken)
@@ -89,6 +93,9 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPost("objects")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> CreateObject(
         [FromBody] MetaObject request,
         CancellationToken cancellationToken)
@@ -118,6 +125,9 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPut("objects")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> UpdateObject(
        [FromBody] UpdateMetaObjectRequest request,
        CancellationToken cancellationToken)
@@ -144,7 +154,11 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpPatch("objects/activate")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> ActivateObject(
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
@@ -157,7 +171,10 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpPatch("objects/deactivate")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeactivateObject(
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
@@ -172,6 +189,8 @@ public class MetaSchemaController : ControllerBase
     [HttpGet("relationships/{uuid}")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> GetRelationship(
        Guid uuid,
        CancellationToken cancellationToken)
@@ -206,6 +225,8 @@ public class MetaSchemaController : ControllerBase
     [HttpGet("relationships")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
     public async Task<IActionResult> GetRelationshipByName(
        string name,
        CancellationToken cancellationToken)
@@ -239,6 +260,8 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPost("relationships")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateRelationship(
         [FromBody] MetaObjectRelationship request,
         CancellationToken cancellationToken)
@@ -269,6 +292,8 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPut("relationships")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateRelationship(
        [FromBody] UpdateMetaObjectRelationshipRequest request,
        CancellationToken cancellationToken)
@@ -296,7 +321,10 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpPatch("relationships/activate")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ActivateRelationship(
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
@@ -309,7 +337,10 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpPatch("relationships/deactivate")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeactivateRelationship(
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
