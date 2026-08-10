@@ -2,6 +2,7 @@
 using Forge.Features.MetaSchema.Contracts;
 using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
+using Forge.Shared.Exceptions;
 using Forge.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ public class MetaSchemaController : ControllerBase
 
         if (result is null)
         {
-            return NotFound();
+            throw new NotFoundException("MetaObject not found.");
         }
 
         var resultDTO = new MetaObjectRequest
@@ -71,7 +72,7 @@ public class MetaSchemaController : ControllerBase
 
         if (result is null)
         {
-            return NotFound();
+            throw new NotFoundException("MetaObject not found.");
         }
 
         var resultDTO = new MetaObjectRequest
@@ -167,7 +168,10 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        return NoContent();
+        return StatusCode(
+            StatusCodes.Status200OK,
+            ApiResponse.Success("MetaObject activated successfully.")
+        );
     }
 
     [HttpPatch("objects/deactivate")]
@@ -183,7 +187,10 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        return NoContent();
+        return StatusCode(
+            StatusCodes.Status200OK,
+            ApiResponse.Success("MetaObject deactivated successfully.")
+        );
     }
 
     [HttpGet("relationships/{uuid}")]
@@ -201,7 +208,7 @@ public class MetaSchemaController : ControllerBase
 
         if (result is null)
         {
-            return NotFound();
+            throw new NotFoundException("MetaRelationship not found.");
         }
 
         var resultDTO = new MetaObjectRelationshipRequest
@@ -237,7 +244,7 @@ public class MetaSchemaController : ControllerBase
 
         if (result is null)
         {
-            return NotFound();
+            throw new NotFoundException("MetaRelationship not found.");
         }
 
         var resultDTO = new MetaObjectRelationshipRequest
@@ -333,7 +340,10 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        return NoContent();
+        return StatusCode(
+            StatusCodes.Status200OK,
+            ApiResponse.Success("MetaRelationship activated successfully.")
+        );
     }
 
     [HttpPatch("relationships/deactivate")]
@@ -349,6 +359,9 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        return NoContent();
+        return StatusCode(
+            StatusCodes.Status200OK,
+            ApiResponse.Success("MetaRelationship deactivated successfully.")
+        );
     }
 }
