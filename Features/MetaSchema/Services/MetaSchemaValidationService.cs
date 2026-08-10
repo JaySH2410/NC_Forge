@@ -109,7 +109,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         if (!existingObject.IsActive)
         {
             throw new BusinessException(
-                $"Object '{existingObject.Uuid}' | {existingObject.DisplayName} is already deleted/inactive.");
+                $"Object '{existingObject.Uuid}' | '{existingObject.DisplayName}' is already deleted/inactive.");
         }
         await Task.CompletedTask;
     }
@@ -121,7 +121,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         if (existingObject.IsActive)
         {
             throw new BusinessException(
-                $"Object '{existingObject.Uuid}' | {existingObject.DisplayName} is already restored/active.");
+                $"Object '{existingObject.Uuid}' | '{existingObject.DisplayName}' is already restored/active.");
         }
         await Task.CompletedTask;
     }
@@ -200,7 +200,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         if (!existingRel.IsActive)
         {
             throw new BusinessException(
-                $"Relationship '{existingRel.Uuid}' | {existingRel.DisplayName} is already deleted/inactive.");
+                $"Relationship '{existingRel.Uuid}' | '{existingRel.DisplayName}' is already deleted/inactive.");
         }
         await Task.CompletedTask;
     }
@@ -212,7 +212,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         if (existingRel.IsActive)
         {
             throw new BusinessException(
-                $"Relationship '{existingRel.Uuid}' | {existingRel.DisplayName} is already restored/active.");
+                $"Relationship '{existingRel.Uuid}' | '{existingRel.DisplayName}' is already restored/active.");
         }
         await Task.CompletedTask;
     }
