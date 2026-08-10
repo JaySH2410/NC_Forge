@@ -5,7 +5,7 @@ services:
   forge-api:
     container_name: forge-api
 
-    image: ghcr.io/jaysh2410/forge-api:latest
+    image: ghcr.io/jaysh2410/forge-api:${IMAGE_TAG}
 
     ports:
       - "8080:8080"
