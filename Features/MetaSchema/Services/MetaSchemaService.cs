@@ -32,7 +32,7 @@ public class MetaSchemaService : IMetaSchemaService
        CancellationToken cancellationToken = default)
    {
         return await _context.MetaObjects
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(
             x => x.Uuid == objUid,
             cancellationToken);
@@ -43,7 +43,7 @@ public class MetaSchemaService : IMetaSchemaService
       CancellationToken cancellationToken = default)
     {
         return await _context.MetaObjectRelationships
-            .AsNoTracking()
+            //.AsNoTracking()
             .FirstOrDefaultAsync(
             x => x.Uuid == relUid,
             cancellationToken);
