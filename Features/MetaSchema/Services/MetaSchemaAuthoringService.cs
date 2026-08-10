@@ -27,12 +27,16 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
     private readonly IMetaSchemaValidationService _validationService;
 
+    private readonly IMetaSchemaService _metaSchemaService;
+
     public MetaSchemaAuthoringService(
         AppDbContext context,
-        IMetaSchemaValidationService validationService)
+        IMetaSchemaValidationService validationService,
+        IMetaSchemaService metaSchemaService)
     {
         _context = context;
         _validationService = validationService;
+        _metaSchemaService = metaSchemaService;
     }
 
     public async Task<MetaObject> CreateObjectAsync(
@@ -54,12 +58,11 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default)
     {
-        var existingObject = await _context.MetaObjects
-            .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-            cancellationToken);
+        var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
-        if (existingObject is null)
-            throw new NotFoundException($"Object with '{request.Uuid}' | '{request.DisplayName}' was not found");
+        if (existingObject == null) {
+            throw new NotFoundException($"Object with '{request.Uuid}' was not found");
+        }
 
         await _validationService.ValidateUpdateObjectAsync(
             existingObject,
@@ -77,13 +80,12 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     public async Task DeactivateObjectAsync(
         UuidRequest request,
         CancellationToken cancellationToken = default){
-        var existingObject = await _context.MetaObjects
-            .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-            cancellationToken);
+        var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
-        if (existingObject is null)
+        if (existingObject == null)
+        {
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
-
+        }
         await _validationService.ValidateDeactivateObjectAsync(
                 existingObject,
                 cancellationToken);
@@ -97,13 +99,12 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         UuidRequest request,
         CancellationToken cancellationToken = default)
     {
-        var existingObject = await _context.MetaObjects
-            .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-            cancellationToken);
+        var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
-        if (existingObject is null)
+        if (existingObject == null)
+        {
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
-
+        }
         await _validationService.ValidateActivateObjectAsync(
                 existingObject,
                 cancellationToken);
@@ -137,6 +138,18 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         //SaveChanges()
     }
 
+    //private async Task<MetaObject> GetObjectOrThrowAsync(UuidRequest request,CancellationToken cancellationToken)
+    //{
+    //    var metaObject = await _context.MetaObjects
+    //        .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
+    //        cancellationToken);
+
+    //    if(metaObject is null)
+    //        throw new NotFoundException($"Object with '{request.Uuid}' was not found");
+
+    //    return metaObject;
+    //}
+
     public async Task<MetaObjectRelationship> CreateRelationshipAsync(
         MetaObjectRelationship request,
         CancellationToken cancellationToken = default)
@@ -155,12 +168,11 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     public async Task<MetaObjectRelationship> UpdateRelationshipAsync(
         UpdateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default){
-        var existingRel = await _context.MetaObjectRelationships
-            .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-            cancellationToken);
+        var existingRel = await _metaSchemaService.GetRelationshipAsync(request.Uuid, cancellationToken);
 
-        if (existingRel is null)
-            throw new NotFoundException($"Relationship with '{request.Uuid}' | '{request.DisplayName}' was not found");
+        if(existingRel == null)
+            throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
+
 
         await _validationService.ValidateUpdateRelationshipAsync(
             existingRel,
@@ -178,12 +190,10 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     public async Task DeactivateRelationshipAsync(
         UuidRequest request,
         CancellationToken cancellationToken = default){
-        var existingRel = await _context.MetaObjectRelationships
-            .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-            cancellationToken);
+        var existingRel = await _metaSchemaService.GetRelationshipAsync(request.Uuid, cancellationToken);
 
-        if (existingRel is null)
-            throw new NotFoundException($"Object with '{request.Uuid}' was not found");
+        if (existingRel == null)
+            throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
         await _validationService.ValidateDeactivateRelationshipAsync(
                 existingRel,
@@ -198,12 +208,11 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         UuidRequest request,
         CancellationToken cancellationToken = default)
     {
-            var existingRel = await _context.MetaObjectRelationships
-                .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
-                cancellationToken);
+        var existingRel = await _metaSchemaService.GetRelationshipAsync(request.Uuid, cancellationToken);
 
-            if (existingRel is null)
-                throw new NotFoundException($"Object with '{request.Uuid}' was not found");
+        if (existingRel == null)
+            throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
+
 
             await _validationService.ValidateActivateRelationshipAsync(
                     existingRel,
@@ -229,4 +238,17 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         //      ▼
         //SaveChanges()
     }
+
+    //private async Task<MetaObjectRelationship> GetRelationshipOrThrowAsync(UuidRequest request, CancellationToken cancellationToken)
+    //{
+    //    var metaRelObject = await _context.MetaObjectRelationships
+    //        .FirstOrDefaultAsync(x => x.Uuid == request.Uuid,
+    //        cancellationToken);
+
+    //    if (metaRelObject is null)
+    //        throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
+
+    //    return metaRelObject;
+    //}
+
 }
