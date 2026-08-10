@@ -26,11 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Docs\API\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Features\MetaSchema\Contracts\" />
-    <Folder Include="Features\MetaSchema\Controllers\" />
-    <Folder Include="Features\MetaSchema\DTOs\" />
-    <Folder Include="Features\MetaSchema\Services\" />
     <Folder Include="Features\MetaSchema\Validators\" />
     <Folder Include="Features\Demo Feature\Constants\" />
     <Folder Include="Features\Demo Feature\Contracts\" />
@@ -50,24 +47,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Docs\Architecture\02-Forge-Platform-Layers.md" />
-    <Compile Include="Docs\Architecture\05-Core-Metadata-Concepts.md" />
-    <Compile Include="Docs\Architecture\06-Scope-Model-Overview.md" />
-    <Compile Include="Docs\Architecture\07-Placement-Model.md" />
-    <Compile Remove="Docs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include=".github\workflows\build.yml" />
+    <None Include=".github\workflows\build_deploy_on_local.yml" />
+    <None Include=".github\workflows\build_on_local.yml" />
+    <None Include=".github\workflows\deploy_on_local.yml" />
     <None Include="C:\Users\jsheth\Development\test\test\.editorconfig" />
-    <None Remove="Docs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Docs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Docs\**" />
   </ItemGroup>
 
 </Project>
