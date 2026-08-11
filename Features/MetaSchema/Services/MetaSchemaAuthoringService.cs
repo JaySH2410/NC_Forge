@@ -40,18 +40,28 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     }
 
     public async Task<MetaObject> CreateObjectAsync(
-        MetaObject metaObject,
+        CreateMetaObjectRequest metaObject,
         CancellationToken cancellationToken = default)
     {
+        MetaObject metaObjectEntity = new MetaObject
+        {
+            Uuid = metaObject.Uuid,
+            Name = metaObject.Name,
+            DisplayName = metaObject.DisplayName,
+            Description = metaObject.Description,
+            ObjTypeUid = metaObject.ObjTypeUid,
+            ApplicationUid = metaObject.ApplicationUid,
+            Version = metaObject.Version
+        };
         await _validationService.ValidateCreateObjectAsync(
-            metaObject,
+            metaObjectEntity,
             cancellationToken);
 
-        _context.MetaObjects.Add(metaObject);
+        _context.MetaObjects.Add(metaObjectEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return metaObject;
+        return metaObjectEntity;
     }
 
     public async Task<MetaObject> UpdateObjectAsync(
@@ -151,18 +161,29 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     //}
 
     public async Task<MetaObjectRelationship> CreateRelationshipAsync(
-        MetaObjectRelationship request,
+        CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default)
     {
+        MetaObjectRelationship requestEntity = new MetaObjectRelationship
+        {
+            Uuid = request.Uuid,
+            Name = request.Name,
+            DisplayName = request.DisplayName,
+            Description = request.Description,
+            End1Uid = request.End1Uid,
+            End2Uid = request.End2Uid,
+            RelTypeUid = request.RelTypeUid,
+            Ordinal = request.Ordinal
+        };
         await _validationService.ValidateCreateRelationshipAsync(
-            request,
+            requestEntity,
             cancellationToken);
 
-        _context.MetaObjectRelationships.Add(request);
+        _context.MetaObjectRelationships.Add(requestEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return request;
+        return requestEntity;
     }
 
     public async Task<MetaObjectRelationship> UpdateRelationshipAsync(

@@ -6,7 +6,7 @@ namespace Forge.Features.MetaSchema.Contracts;
 public interface IMetaSchemaAuthoringService
 {
     Task<MetaObject> CreateObjectAsync(
-        MetaObject metaObject,
+        CreateMetaObjectRequest metaObject,
         CancellationToken cancellationToken = default);
 
     Task<MetaObject> UpdateObjectAsync(
@@ -26,7 +26,7 @@ public interface IMetaSchemaAuthoringService
         CancellationToken cancellationToken = default);
 
     Task<MetaObjectRelationship> CreateRelationshipAsync(
-        MetaObjectRelationship relationship,
+        CreateMetaObjectRelationshipRequest relationship,
         CancellationToken cancellationToken = default);
 
     Task<MetaObjectRelationship> UpdateRelationshipAsync(

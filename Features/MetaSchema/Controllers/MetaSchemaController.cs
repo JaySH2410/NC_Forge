@@ -98,7 +98,7 @@ public class MetaSchemaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
     public async Task<IActionResult> CreateObject(
-        [FromBody] MetaObject request,
+        [FromBody] CreateMetaObjectRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _authoringService.CreateObjectAsync(
@@ -194,7 +194,7 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpGet("relationships/{uuid}")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
@@ -270,7 +270,7 @@ public class MetaSchemaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateRelationship(
-        [FromBody] MetaObjectRelationship request,
+        [FromBody] CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _authoringService.CreateRelationshipAsync(
