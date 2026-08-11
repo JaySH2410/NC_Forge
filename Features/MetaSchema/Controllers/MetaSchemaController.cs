@@ -23,7 +23,7 @@ public class MetaSchemaController : ControllerBase
     }
 
     [HttpGet("objects/{uuid}")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
@@ -40,7 +40,7 @@ public class MetaSchemaController : ControllerBase
             throw new NotFoundException("MetaObject not found.");
         }
 
-        var resultDTO = new MetaObjectRequest
+        var resultDTO = new MetaObjectResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -52,13 +52,13 @@ public class MetaSchemaController : ControllerBase
             Version = result.Version
         };
 
-        return Ok(ApiResponse<MetaObjectRequest>.Success(
+        return Ok(ApiResponse<MetaObjectResponse>.Success(
             resultDTO,
             "MetaObject retrieved successfully."));
     }
 
     [HttpGet("objects")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
@@ -75,7 +75,7 @@ public class MetaSchemaController : ControllerBase
             throw new NotFoundException("MetaObject not found.");
         }
 
-        var resultDTO = new MetaObjectRequest
+        var resultDTO = new MetaObjectResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -87,14 +87,14 @@ public class MetaSchemaController : ControllerBase
             Version = result.Version
         };
 
-        return Ok(ApiResponse<MetaObjectRequest>.Success(
+        return Ok(ApiResponse<MetaObjectResponse>.Success(
             resultDTO,
             "MetaObject retrieved successfully."));
     }
 
     [HttpPost("objects")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
     public async Task<IActionResult> CreateObject(
@@ -105,7 +105,7 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRequest
+        var resultDTO = new MetaObjectResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -119,13 +119,13 @@ public class MetaSchemaController : ControllerBase
 
         return StatusCode(
         StatusCodes.Status201Created,
-        ApiResponse<MetaObjectRequest>.Success(
+        ApiResponse<MetaObjectResponse>.Success(
             resultDTO,
             "MetaObject created successfully."));
     }
 
     [HttpPut("objects")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
@@ -137,7 +137,7 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRequest
+        var resultDTO = new MetaObjectResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -149,7 +149,7 @@ public class MetaSchemaController : ControllerBase
             Version = result.Version
         };
 
-        return Ok(ApiResponse<MetaObjectRequest>.Success(
+        return Ok(ApiResponse<MetaObjectResponse>.Success(
             resultDTO,
             "MetaObject updated successfully."));
     }
@@ -211,7 +211,7 @@ public class MetaSchemaController : ControllerBase
             throw new NotFoundException("MetaRelationship not found.");
         }
 
-        var resultDTO = new MetaObjectRelationshipRequest
+        var resultDTO = new MetaObjectRelationshipResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -224,13 +224,13 @@ public class MetaSchemaController : ControllerBase
             Ordinal = result.Ordinal
         };
 
-        return Ok(ApiResponse<MetaObjectRelationshipRequest>.Success(
+        return Ok(ApiResponse<MetaObjectRelationshipResponse>.Success(
             resultDTO,
             "MetaRelationship retrieved successfully."));
     }
 
     [HttpGet("relationships")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
@@ -247,7 +247,7 @@ public class MetaSchemaController : ControllerBase
             throw new NotFoundException("MetaRelationship not found.");
         }
 
-        var resultDTO = new MetaObjectRelationshipRequest
+        var resultDTO = new MetaObjectRelationshipResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -260,14 +260,14 @@ public class MetaSchemaController : ControllerBase
             Ordinal = result.Ordinal
         };
 
-        return Ok(ApiResponse<MetaObjectRelationshipRequest>.Success(
+        return Ok(ApiResponse<MetaObjectRelationshipResponse>.Success(
             resultDTO,
             "MetaRelationship retrieved successfully."));
     }
 
     [HttpPost("relationships")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRequest>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateRelationship(
         [FromBody] CreateMetaObjectRelationshipRequest request,
@@ -277,7 +277,7 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRelationshipRequest
+        var resultDTO = new MetaObjectRelationshipResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -292,13 +292,13 @@ public class MetaSchemaController : ControllerBase
 
         return StatusCode(
         StatusCodes.Status201Created,
-        ApiResponse<MetaObjectRelationshipRequest>.Success(
+        ApiResponse<MetaObjectRelationshipResponse>.Success(
             resultDTO,
             "MetaRelationship created successfully."));
     }
 
     [HttpPut("relationships")]
-    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipRequest>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateRelationship(
@@ -309,7 +309,7 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRelationshipRequest
+        var resultDTO = new MetaObjectRelationshipResponse
         {
             Id = result.Id,
             Uuid = result.Uuid,
@@ -322,7 +322,7 @@ public class MetaSchemaController : ControllerBase
             Ordinal = result.Ordinal
         };
 
-        return Ok(ApiResponse<MetaObjectRelationshipRequest>.Success(
+        return Ok(ApiResponse<MetaObjectRelationshipResponse>.Success(
             resultDTO,
             "MetaRelationship updated successfully."));
     }
