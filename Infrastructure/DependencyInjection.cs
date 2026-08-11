@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Forge.Features.Auth.Contracts;
 using Forge.Features.Auth.Services;
+using Forge.Features.MetaSchema.Contracts;
+using Forge.Features.MetaSchema.Services;
 using Forge.Infrastructure.Configuration;
 using Forge.Shared.Contracts;
 using Forge.Shared.Services;
@@ -36,6 +38,8 @@ public static class DependencyInjection
         ////MetaSchema
         services.AddScoped<IMetaSchemaService, MetaSchemaService>();
         services.AddScoped<IGraphTraversalService, GraphTraversalService>();
+        services.AddScoped<IMetaSchemaValidationService, MetaSchemaValidationService>();
+        services.AddScoped<IMetaSchemaAuthoringService, MetaSchemaAuthoringService>();
         // JWT
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));  
         services.AddScoped<IJwtTokenService, JwtTokenService>();

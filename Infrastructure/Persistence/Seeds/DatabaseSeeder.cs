@@ -2,6 +2,7 @@ using Forge.Features.MetaSchema.Seed;
 using Forge.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Forge.Features.MetaSchema.Entities;
 
 namespace  Forge.Infrastructure.Persistence.Seeds;
 
@@ -17,13 +18,18 @@ public static class DatabaseSeeder
             .GetRequiredService<IOptions<DatabaseSettings>>()
             .Value;
 
-        //if (settings.ReseedMetaSchema)
-        //{
-        //    await dbContext.MetaObjectRelationships.ExecuteDeleteAsync();
-        //    await dbContext.MetaObjects.ExecuteDeleteAsync();
-        //    await dbContext.Applications.ExecuteDeleteAsync();
-        //}
-        await dbContext.Database.MigrateAsync();
+        //var entityType = dbContext.Model.FindEntityType(typeof(Application));
+
+        //Console.WriteLine(entityType?.GetTableName());
+
+        //Console.WriteLine(entityType?.GetTableName());
+
+        if (settings.ReseedMetaSchema)
+        {
+            //await dbContext.MetaObjectRelationships.ExecuteDeleteAsync();
+            //await dbContext.MetaObjects.ExecuteDeleteAsync();
+            //await dbContext.Applications.ExecuteDeleteAsync();
+        }
 
         await MetaSchemaSeeder.SeedAsync(dbContext);
 

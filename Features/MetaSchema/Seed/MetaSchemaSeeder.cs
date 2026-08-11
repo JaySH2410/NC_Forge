@@ -20,6 +20,7 @@ public static class MetaSchemaSeeder
         AppDbContext dbContext,
         CancellationToken cancellationToken)
     {
+        //Console.WriteLine(dbContext.Applications.ToQueryString());
         if (await dbContext.Applications.AnyAsync(cancellationToken))
             return;
 

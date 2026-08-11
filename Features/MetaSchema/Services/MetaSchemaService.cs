@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Forge.Features.MetaSchema.Contracts;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -31,34 +32,69 @@ public class MetaSchemaService : IMetaSchemaService
        Guid objUid,
        CancellationToken cancellationToken = default)
    {
-       return await _context.MetaObjects.FindAsync(
-           [objUid],
-           cancellationToken);
+        return await _context.MetaObjects
+            //.AsNoTracking()
+            .FirstOrDefaultAsync(
+            x => x.Uuid == objUid,
+            cancellationToken);
    }
 
-   public async Task<MetaObject?> GetObjectByNameAsync(
+    public async Task<MetaObjectRelationship?> GetRelationshipAsync(
+      Guid relUid,
+      CancellationToken cancellationToken = default)
+    {
+        return await _context.MetaObjectRelationships
+            //.AsNoTracking()
+            .FirstOrDefaultAsync(
+            x => x.Uuid == relUid,
+            cancellationToken);
+    }
+
+    public async Task<MetaObject?> GetObjectByNameAsync(
        string name,
        CancellationToken cancellationToken = default)
-   {
-       return await _context.MetaObjects
-           .AsNoTracking()
-           .FirstOrDefaultAsync(
-               x => x.Name == name,
-               cancellationToken);
-   }
+    {
+        return await _context.MetaObjects
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.Name == name,
+                cancellationToken);
+    }
 
-   public async Task<bool> ExistsAsync(
+    public async Task<MetaObjectRelationship?> GetRelationshipByNameAsync(
+       string name,
+       CancellationToken cancellationToken = default)
+    {
+        return await _context.MetaObjectRelationships
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.Name == name,
+                cancellationToken);
+    }
+
+    public async Task<bool> ObjectExistsAsync(
        Guid objUid,
        CancellationToken cancellationToken = default)
-   {
-       return await _context.MetaObjects
-           .AsNoTracking()
-           .AnyAsync(
-               x => x.Uuid == objUid,
-               cancellationToken);
-   }
+    {
+        return await _context.MetaObjects
+            .AsNoTracking()
+            .AnyAsync(
+                x => x.Uuid == objUid,
+                cancellationToken);
+    }
 
-   public async Task<IReadOnlyCollection<MetaObject>> GetRelatedObjectsAsync(
+    public async Task<bool> RelationshipExistsAsync(
+       Guid relUid,
+       CancellationToken cancellationToken = default)
+    {
+        return await _context.MetaObjectRelationships
+            .AsNoTracking()
+            .AnyAsync(
+                x => x.Uuid == relUid,
+                cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<MetaObject>> GetRelatedObjectsAsync(
        Guid sourceUid,
        Guid relationshipTypeUid,
        CancellationToken cancellationToken = default)
@@ -92,5 +128,18 @@ public class MetaSchemaService : IMetaSchemaService
 
        return result.FirstOrDefault();
    }
-   
+
+    public async Task<MetaObject?> GetSingleReferencingObjectAsync(
+       Guid targetUid,
+       Guid relationshipTypeUid,
+       CancellationToken cancellationToken = default)
+    {
+        var result = await _graphTraversalService.GetSourcesAsync(
+            targetUid,
+            relationshipTypeUid,
+            cancellationToken);
+
+        return result.FirstOrDefault();
+    }
+
 }
