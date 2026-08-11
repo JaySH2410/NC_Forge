@@ -1,5 +1,4 @@
 using Forge.Features.MetaSchema.Entities;
-using Forge.Infrastructure.Persistence.Configurations.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
