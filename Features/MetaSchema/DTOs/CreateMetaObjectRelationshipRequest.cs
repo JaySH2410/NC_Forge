@@ -2,11 +2,8 @@
 
 
 //used for
-//1. Getting a MetaObjectRelationship by its UUID
-//2. Getting a MetaObjectRelationship by its Name
-//3. Creating a new MetaObjectRelationship
-//4. Updating an existing MetaObjectRelationship
-public sealed class MetaObjectRelationshipRequest {
+//1. Creating a new MetaObjectRelationship
+public sealed class CreateMetaObjectRelationshipRequest {
     public int Id { get; set; }
     public Guid Uuid { get; set; }
     public required string Name { get; set; }

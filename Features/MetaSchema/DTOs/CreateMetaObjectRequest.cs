@@ -1,11 +1,9 @@
 ﻿namespace Forge.Features.MetaSchema.DTOs;
 
 //used for
-//1. Getting a MetaObject by its UUID
-//2. Getting a MetaObject by its Name
-//3. Creating a new MetaObject
-//4. Updating an existing MetaObject
-public sealed class MetaObjectRequest
+//1. Creating a new MetaObject
+
+public sealed class CreateMetaObjectRequest
 {
     public int Id { get; set; }
     public Guid Uuid { get; set; }
