@@ -5,7 +5,7 @@
 //2. Getting a MetaObject by its Name
 //3. Creating a new MetaObject
 //4. Updating an existing MetaObject
-public sealed class MetaObjectRequest
+public sealed class MetaObjectResponse
 {
     public int Id { get; set; }
     public Guid Uuid { get; set; }

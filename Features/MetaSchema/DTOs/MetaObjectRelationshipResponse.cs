@@ -6,7 +6,7 @@
 //2. Getting a MetaObjectRelationship by its Name
 //3. Creating a new MetaObjectRelationship
 //4. Updating an existing MetaObjectRelationship
-public sealed class MetaObjectRelationshipRequest {
+public sealed class MetaObjectRelationshipResponse {
     public int Id { get; set; }
     public Guid Uuid { get; set; }
     public required string Name { get; set; }
