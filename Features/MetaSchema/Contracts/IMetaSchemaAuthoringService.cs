@@ -5,11 +5,11 @@ namespace Forge.Features.MetaSchema.Contracts;
 
 public interface IMetaSchemaAuthoringService
 {
-    Task<MetaObject> CreateObjectAsync(
+    Task<MetaObjectResponse> CreateObjectAsync(
         CreateMetaObjectRequest metaObject,
         CancellationToken cancellationToken = default);
 
-    Task<MetaObject> UpdateObjectAsync(
+    Task<MetaObjectResponse> UpdateObjectAsync(
         UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default);
 
@@ -25,11 +25,11 @@ public interface IMetaSchemaAuthoringService
         UuidRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<MetaObjectRelationship> CreateRelationshipAsync(
+    Task<MetaObjectRelationshipResponse> CreateRelationshipAsync(
         CreateMetaObjectRelationshipRequest relationship,
         CancellationToken cancellationToken = default);
 
-    Task<MetaObjectRelationship> UpdateRelationshipAsync(
+    Task<MetaObjectRelationshipResponse> UpdateRelationshipAsync(
         UpdateMetaObjectRelationshipRequest relationship,
         CancellationToken cancellationToken = default);
 

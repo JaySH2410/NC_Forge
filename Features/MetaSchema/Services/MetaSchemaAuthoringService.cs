@@ -39,7 +39,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         _metaSchemaService = metaSchemaService;
     }
 
-    public async Task<MetaObject> CreateObjectAsync(
+    public async Task<MetaObjectResponse> CreateObjectAsync(
         CreateMetaObjectRequest metaObject,
         CancellationToken cancellationToken = default)
     {
@@ -56,15 +56,27 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         await _validationService.ValidateCreateObjectAsync(
             metaObjectEntity,
             cancellationToken);
-
+            
         _context.MetaObjects.Add(metaObjectEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return metaObjectEntity;
+        MetaObjectResponse response = new MetaObjectResponse
+        {
+            Id = metaObjectEntity.Id,
+            Uuid = metaObjectEntity.Uuid,
+            Name = metaObjectEntity.Name,
+            DisplayName = metaObjectEntity.DisplayName,
+            Description = metaObjectEntity.Description,
+            ObjTypeUid = metaObjectEntity.ObjTypeUid,
+            ApplicationUid = metaObjectEntity.ApplicationUid,
+            Version = metaObjectEntity.Version
+        };
+
+        return response;
     }
 
-    public async Task<MetaObject> UpdateObjectAsync(
+    public async Task<MetaObjectResponse> UpdateObjectAsync(
         UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -84,7 +96,18 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return existingObject;
+        var response = new MetaObjectResponse
+        {
+            Id = existingObject.Id,
+            Uuid = existingObject.Uuid,
+            Name = existingObject.Name,
+            DisplayName = existingObject.DisplayName,
+            Description = existingObject.Description,
+            ObjTypeUid = existingObject.ObjTypeUid,
+            ApplicationUid = existingObject.ApplicationUid,
+            Version = existingObject.Version
+        };
+        return response;
     }
 
     public async Task DeactivateObjectAsync(
@@ -160,7 +183,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     //    return metaObject;
     //}
 
-    public async Task<MetaObjectRelationship> CreateRelationshipAsync(
+    public async Task<MetaObjectRelationshipResponse> CreateRelationshipAsync(
         CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -183,31 +206,58 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return requestEntity;
+        var response = new MetaObjectRelationshipResponse
+        {
+            Id = requestEntity.Id,
+            Uuid = requestEntity.Uuid,
+            Name = requestEntity.Name,
+            DisplayName = requestEntity.DisplayName,
+            Description = requestEntity.Description,
+            End1Uid = requestEntity.End1Uid,
+            End2Uid = requestEntity.End2Uid,
+            RelTypeUid = requestEntity.RelTypeUid,
+            Ordinal = requestEntity.Ordinal
+        };
+
+        return response;
     }
 
-    public async Task<MetaObjectRelationship> UpdateRelationshipAsync(
+    public async Task<MetaObjectRelationshipResponse> UpdateRelationshipAsync(
         UpdateMetaObjectRelationshipRequest request,
-        CancellationToken cancellationToken = default){
+        CancellationToken cancellationToken = default)
+    {
         var existingRel = await _metaSchemaService.GetRelationshipAsync(request.Uuid, cancellationToken);
 
-        if(existingRel == null)
+        if (existingRel == null)
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
 
-            await _validationService.ValidateUpdateRelationshipAsync(
-            existingRel,
-            request,
-            cancellationToken);
+        await _validationService.ValidateUpdateRelationshipAsync(
+        existingRel,
+        request,
+        cancellationToken);
 
         existingRel.DisplayName = request.DisplayName;
         existingRel.Description = request.Description;
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return existingRel;
+        var response = new MetaObjectRelationshipResponse
+        {
+            Id = existingRel.Id,
+            Uuid = existingRel.Uuid,
+            Name = existingRel.Name,
+            DisplayName = existingRel.DisplayName,
+            Description = existingRel.Description,
+            End1Uid = existingRel.End1Uid,
+            End2Uid = existingRel.End2Uid,
+            RelTypeUid = existingRel.RelTypeUid,
+            Ordinal = existingRel.Ordinal
+        };
+
+        return response;
     }
-    
+
     public async Task DeactivateRelationshipAsync(
         UuidRequest request,
         CancellationToken cancellationToken = default){

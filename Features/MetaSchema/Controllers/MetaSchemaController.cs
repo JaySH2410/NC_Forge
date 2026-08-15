@@ -105,22 +105,10 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectResponse
-        {
-            Id = result.Id,
-            Uuid = result.Uuid,
-            Name = result.Name,
-            DisplayName = result.DisplayName,
-            Description = result.Description,
-            ObjTypeUid = result.ObjTypeUid,
-            ApplicationUid = result.ApplicationUid,
-            Version = result.Version
-        };
-
-        return StatusCode(
+       return StatusCode(
         StatusCodes.Status201Created,
         ApiResponse<MetaObjectResponse>.Success(
-            resultDTO,
+            result,
             "MetaObject created successfully."));
     }
 
@@ -137,20 +125,8 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectResponse
-        {
-            Id = result.Id,
-            Uuid = result.Uuid,
-            Name = result.Name,
-            DisplayName = result.DisplayName,
-            Description = result.Description,
-            ObjTypeUid = result.ObjTypeUid,
-            ApplicationUid = result.ApplicationUid,
-            Version = result.Version
-        };
-
         return Ok(ApiResponse<MetaObjectResponse>.Success(
-            resultDTO,
+            result,
             "MetaObject updated successfully."));
     }
 
@@ -277,23 +253,12 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRelationshipResponse
-        {
-            Id = result.Id,
-            Uuid = result.Uuid,
-            Name = result.Name,
-            DisplayName = result.DisplayName,
-            Description = result.Description,
-            End1Uid = result.End1Uid,
-            End2Uid = result.End2Uid,
-            RelTypeUid = result.RelTypeUid,
-            Ordinal = result.Ordinal
-        };
+        
 
         return StatusCode(
         StatusCodes.Status201Created,
         ApiResponse<MetaObjectRelationshipResponse>.Success(
-            resultDTO,
+            result,
             "MetaRelationship created successfully."));
     }
 
@@ -309,21 +274,8 @@ public class MetaSchemaController : ControllerBase
             request,
             cancellationToken);
 
-        var resultDTO = new MetaObjectRelationshipResponse
-        {
-            Id = result.Id,
-            Uuid = result.Uuid,
-            Name = result.Name,
-            DisplayName = result.DisplayName,
-            Description = result.Description,
-            End1Uid = result.End1Uid,
-            End2Uid = result.End2Uid,
-            RelTypeUid = result.RelTypeUid,
-            Ordinal = result.Ordinal
-        };
-
         return Ok(ApiResponse<MetaObjectRelationshipResponse>.Success(
-            resultDTO,
+            result,
             "MetaRelationship updated successfully."));
     }
 
