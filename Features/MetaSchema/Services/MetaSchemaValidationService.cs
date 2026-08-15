@@ -4,7 +4,6 @@ using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using static Forge.Features.MetaSchema.Constants.MetaSchemaConstants;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -32,6 +31,11 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         MetaObject metaObject,
         CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(metaObject.Name)) { 
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "Name", ["Name is required."] } });
+        }
+
         //Checking the DisplayName is not null or empty
         if (string.IsNullOrWhiteSpace(metaObject.DisplayName))
         {
@@ -77,7 +81,11 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
 
         if (!exists)
         {
-            throw new NotFoundException($"MetaObject with type '{metaObject.ObjTypeUid}' does not exist.");
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "ObjTypeUid", [$"MetaObject with type '{metaObject.ObjTypeUid}' does not exist."] }
+                });
         }
 
         if (metaObject.ObjTypeUid == metaObject.Uuid)
@@ -137,13 +145,35 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         MetaObjectRelationship relationship,
         CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(relationship.Name))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "Name", ["Name is required."] } });
+        }
+
+        //Checking the DisplayName is not null or empty
+        if (string.IsNullOrWhiteSpace(relationship.DisplayName))
+        {
+            relationship.DisplayName = relationship.Name;
+        }
+
+        //Checking for the duplicate Uuid 
+        if (await _metaSchemaService.ObjectExistsAsync(relationship.Uuid, cancellationToken))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "Uuid", [$"MetaRelationship with Uuid '{relationship.Uuid}' already exists."] }
+                });
+        }
+
         // End1 must exist
         if (!await _metaSchemaService.ObjectExistsAsync(
                 relationship.End1Uid,
                 cancellationToken))
         {
-            throw new NotFoundException(
-                $"Source object '{relationship.End1Uid}' does not exist.");
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "End1Uid", [$"Source object '{relationship.End1Uid}' does not exist."] } });
         }
 
         // End2 must exist
@@ -151,8 +181,15 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 relationship.End2Uid,
                 cancellationToken))
         {
-            throw new NotFoundException(
-                $"Target object '{relationship.End2Uid}' does not exist.");
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "End2Uid", [$"Target object '{relationship.End2Uid}' does not exist."] } });
+        }
+
+        //Relationship Type should not be null or empty
+        if (string.IsNullOrWhiteSpace(relationship.RelTypeUid.ToString()))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "RelTypeUid", ["Relationship type is required."] } });
         }
 
         // Relationship Type must exist
@@ -160,8 +197,8 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 relationship.RelTypeUid,
                 cancellationToken))
         {
-            throw new NotFoundException(
-                $"Relationship type '{relationship.RelTypeUid}' does not exist.");
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "RelTypeUid", [$"Relationship type '{relationship.RelTypeUid}' does not exist."] } });
         }
 
         // Duplicate relationship
