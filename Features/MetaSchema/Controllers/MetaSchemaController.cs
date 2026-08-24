@@ -1,10 +1,7 @@
-﻿using Azure.Core.GeoJson;
-using Forge.Features.MetaSchema.Contracts;
+﻿using Forge.Features.MetaSchema.Contracts;
 using Forge.Features.MetaSchema.DTOs;
-using Forge.Features.MetaSchema.Entities;
 using Forge.Shared.Exceptions;
 using Forge.Shared.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forge.Features.MetaSchema.Controllers;
