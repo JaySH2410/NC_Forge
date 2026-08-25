@@ -8,9 +8,9 @@ public sealed class CreateMetaObjectRelationshipRequestValidator
 {
     public CreateMetaObjectRelationshipRequestValidator()
     {
-        RuleFor(x => x.Uuid)
-            .NotEmpty()
-            .WithMessage("Uuid is required.");
+        //RuleFor(x => x.Uuid)
+        //    .NotEmpty()
+        //    .WithMessage("Uuid is required.");
 
         RuleFor(x => x.Name)
             .NotEmpty()
