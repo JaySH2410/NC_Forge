@@ -10,12 +10,13 @@ namespace Forge.Features.MetaSchema.Controllers;
 [ApiController]
 public class MetaSchemaController : ControllerBase
 {
-    private readonly IMetaSchemaAuthoringService _authoringService;
+    private readonly IMetaSchemaAuthoringService _metaSchemaAuthoringService;
     private readonly IMetaSchemaService _metaSchemaService;
 
     public MetaSchemaController(IMetaSchemaAuthoringService authoringService, IMetaSchemaService metaSchemaService)
+        IMetaSchemaAuthoringService metaSchemaAuthoringService,
     {
-        _authoringService = authoringService;
+        _metaSchemaAuthoringService = metaSchemaAuthoringService;
         _metaSchemaService = metaSchemaService;
     }
 
@@ -98,7 +99,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] CreateMetaObjectRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _authoringService.CreateObjectAsync(
+        var result = await _metaSchemaAuthoringService.CreateObjectAsync(
             request,
             cancellationToken);
 
@@ -118,7 +119,7 @@ public class MetaSchemaController : ControllerBase
        [FromBody] UpdateMetaObjectRequest request,
        CancellationToken cancellationToken)
     {
-        var result = await _authoringService.UpdateObjectAsync(
+        var result = await _metaSchemaAuthoringService.UpdateObjectAsync(
             request,
             cancellationToken);
 
@@ -137,7 +138,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.ActivateObjectAsync(
+        await _metaSchemaAuthoringService.ActivateObjectAsync(
             request,
             cancellationToken);
 
@@ -156,7 +157,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.DeactivateObjectAsync(
+        await _metaSchemaAuthoringService.DeactivateObjectAsync(
             request,
             cancellationToken);
 
@@ -246,7 +247,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _authoringService.CreateRelationshipAsync(
+        var result = await _metaSchemaAuthoringService.CreateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -267,7 +268,7 @@ public class MetaSchemaController : ControllerBase
        [FromBody] UpdateMetaObjectRelationshipRequest request,
        CancellationToken cancellationToken)
     {
-        var result = await _authoringService.UpdateRelationshipAsync(
+        var result = await _metaSchemaAuthoringService.UpdateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -285,7 +286,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.ActivateRelationshipAsync(
+        await _metaSchemaAuthoringService.ActivateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -304,7 +305,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.DeactivateRelationshipAsync(
+        await _metaSchemaAuthoringService.DeactivateRelationshipAsync(
             request,
             cancellationToken);
 
