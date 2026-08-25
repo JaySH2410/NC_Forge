@@ -70,23 +70,26 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         //Checking for the Object Type Uid if it is provided, and if it exists in the database
-        if (!metaObject.ObjTypeUid.HasValue)
+        //If in case we are generating the Foundational Uuid, then we need to skip this
+        //if (!metaObject.ObjTypeUid.HasValue)
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]> { { "ObjTypeUid", ["Object Type is required."] } });
+        //}
+        if (newObject.ObjTypeUid.HasValue)
         {
-            throw new ValidationException(
-                new Dictionary<string, string[]> { { "ObjTypeUid", ["Object Type is required."] } });
-        }
+            var exists = await _metaSchemaService.ObjectExistsAsync(
+                newObject.ObjTypeUid.Value,
+                cancellationToken);
 
-        var exists = await _metaSchemaService.ObjectExistsAsync(
-            metaObject.ObjTypeUid.Value,
-            cancellationToken);
-
-        if (!exists)
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "ObjTypeUid", [$"MetaObject with type '{metaObject.ObjTypeUid}' does not exist."] }
-                });
+            if (!exists)
+            {
+                throw new ValidationException(
+                    new Dictionary<string, string[]>
+                    {
+                    { "ObjTypeUid", [$"MetaObject with type '{newObject.ObjTypeUid}' does not exist."] }
+                    });
+            }
         }
         if (newObject.ObjTypeUid == newObject.Uuid)
         {
