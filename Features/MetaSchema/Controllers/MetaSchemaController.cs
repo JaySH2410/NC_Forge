@@ -11,20 +11,121 @@ namespace Forge.Features.MetaSchema.Controllers;
 public class MetaSchemaController : ControllerBase
 {
     private readonly IMetaSchemaAuthoringService _metaSchemaAuthoringService;
+    private readonly IApplicationAuthoringService _appAuthoringService;
     private readonly IMetaSchemaService _metaSchemaService;
+    private readonly IApplicationService _appService;
 
-    public MetaSchemaController(IMetaSchemaAuthoringService authoringService, IMetaSchemaService metaSchemaService)
+
+    public MetaSchemaController(
         IMetaSchemaAuthoringService metaSchemaAuthoringService,
+        IApplicationAuthoringService appAuthoringService,
+        IMetaSchemaService metaSchemaService, 
+        IApplicationService appService
+        )
     {
         _metaSchemaAuthoringService = metaSchemaAuthoringService;
+        _appAuthoringService = appAuthoringService;
         _metaSchemaService = metaSchemaService;
+        _appService = appService;
+    }
+
+    [HttpGet("applications/{uuid}")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplication(
+        Guid uuid,
+        CancellationToken cancellationToken)
+    {
+        var result = await _appService.GetApplicationAsync(
+            uuid,
+            cancellationToken);
+        if (result is null)
+        {
+            throw new NotFoundException("Application not found.");
+        }
+        var resultDTO = new ApplicationResponse
+        {
+            Id = result.Id,
+            Uuid = result.Uuid,
+            Name = result.Name,
+            DisplayName = result.DisplayName,
+            Description = result.Description,
+            Version = result.Version
+        };
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            resultDTO,
+            "Application retrieved successfully."));
+    }
+
+    [HttpGet("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationByName(
+       string name,
+       CancellationToken cancellationToken)
+    {
+        var result = await _appService.GetApplicationByNameAsync(
+            name,
+            cancellationToken);
+        if (result is null)
+        {
+            throw new NotFoundException("Application not found.");
+        }
+        var resultDTO = new ApplicationResponse
+        {
+            Id = result.Id,
+            Uuid = result.Uuid,
+            Name = result.Name,
+            DisplayName = result.DisplayName,
+            Description = result.Description,
+            Version = result.Version
+        };
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            resultDTO,
+            "Application retrieved successfully."));
+    }
+
+    [HttpPost("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateApplication(
+        [FromBody] CreateApplicationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _appAuthoringService.CreateApplicationAsync(
+            request,
+            cancellationToken);
+        return StatusCode(
+            StatusCodes.Status201Created,
+            ApiResponse<ApplicationResponse>.Success(
+                result,
+                "Application created successfully."));
+    }
+    [HttpPut("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+    public async Task<IActionResult> UpdateApplication(
+       [FromBody] UpdateApplicationRequest request,
+       CancellationToken cancellationToken)
+    {
+        var result = await _appAuthoringService.UpdateApplicationAsync(
+            request,
+            cancellationToken);
+
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            result,
+            "Application updated successfully."));
     }
 
     [HttpGet("objects/{uuid}")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
     public async Task<IActionResult> GetObject(
         Guid uuid,
         CancellationToken cancellationToken)
