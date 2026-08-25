@@ -45,7 +45,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     {
         MetaObject metaObjectEntity = new MetaObject
         {
-            Uuid = metaObject.Uuid,
+            //Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken),
             Name = metaObject.Name,
             DisplayName = metaObject.DisplayName,
             Description = metaObject.Description,
@@ -56,7 +56,9 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         await _validationService.ValidateCreateObjectAsync(
             metaObjectEntity,
             cancellationToken);
-            
+
+        metaObjectEntity.Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken);
+
         _context.MetaObjects.Add(metaObjectEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -189,7 +191,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     {
         MetaObjectRelationship requestEntity = new MetaObjectRelationship
         {
-            Uuid = request.Uuid,
+            //Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken),
             Name = request.Name,
             DisplayName = request.DisplayName,
             Description = request.Description,
@@ -202,6 +204,8 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             requestEntity,
             cancellationToken);
 
+        requestEntity.Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken);
+        
         _context.MetaObjectRelationships.Add(requestEntity);
 
         await _context.SaveChangesAsync(cancellationToken);

@@ -43,14 +43,15 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         //Checking for the duplicate Uuid 
-        if (await _metaSchemaService.ObjectExistsAsync(metaObject.Uuid, cancellationToken))
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "Uuid", [$"MetaObject with Uuid '{metaObject.Uuid}' already exists."] }
-                });
-        }
+        //We are generating the Uuid after this - so not required
+        //if (await _metaSchemaService.ObjectExistsAsync(metaObject.Uuid, cancellationToken))
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]>
+        //        {
+        //            { "Uuid", [$"MetaObject with Uuid '{metaObject.Uuid}' already exists."] }
+        //        });
+        //}
 
         //Checking for the duplicate Name
         MetaObject? existingObject = await _context.MetaObjects
@@ -158,14 +159,15 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
 
         //Checking for the duplicate Uuid 
-        if (await _metaSchemaService.ObjectExistsAsync(relationship.Uuid, cancellationToken))
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "Uuid", [$"MetaRelationship with Uuid '{relationship.Uuid}' already exists."] }
-                });
-        }
+        //We are generating the Uuid after this - so not required
+        //if (await _metaSchemaService.ObjectExistsAsync(relationship.Uuid, cancellationToken))
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]>
+        //        {
+        //            { "Uuid", [$"MetaRelationship with Uuid '{relationship.Uuid}' already exists."] }
+        //        });
+        //}
 
         // End1 must exist
         if (!await _metaSchemaService.ObjectExistsAsync(
