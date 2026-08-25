@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<EmailVerificationToken> EmailVerificationTokens =>Set<EmailVerificationToken>();
+    public DbSet<UuidCounter> UuidCounters => Set<UuidCounter>();
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<MetaObject> MetaObjects => Set<MetaObject>();
     public DbSet<MetaObjectRelationship> MetaObjectRelationships => Set<MetaObjectRelationship>();

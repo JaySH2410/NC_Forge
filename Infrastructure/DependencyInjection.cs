@@ -8,6 +8,7 @@ using Forge.Features.MetaSchema.Contracts;
 using Forge.Features.MetaSchema.Services;
 using Forge.Infrastructure.Configuration;
 using Forge.Shared.Contracts;
+using Forge.Shared.Identifiers;
 using Forge.Shared.Services;
 
 namespace Forge.Infrastructure;
@@ -40,6 +41,7 @@ public static class DependencyInjection
         services.AddScoped<IGraphTraversalService, GraphTraversalService>();
         services.AddScoped<IMetaSchemaValidationService, MetaSchemaValidationService>();
         services.AddScoped<IMetaSchemaAuthoringService, MetaSchemaAuthoringService>();
+        services.AddScoped<IForgeUuidGenerator, ForgeUuidGenerator>();
         // JWT
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));  
         services.AddScoped<IJwtTokenService, JwtTokenService>();

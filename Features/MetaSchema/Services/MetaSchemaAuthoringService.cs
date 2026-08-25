@@ -4,6 +4,7 @@ using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
+using Forge.Shared.Identifiers;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,19 +25,21 @@ namespace Forge.Features.MetaSchema.Services;
 public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 {
     private readonly AppDbContext _context;
-
     private readonly IMetaSchemaValidationService _validationService;
-
     private readonly IMetaSchemaService _metaSchemaService;
+    private readonly IForgeUuidGenerator _uuidGenerator;
 
     public MetaSchemaAuthoringService(
         AppDbContext context,
         IMetaSchemaValidationService validationService,
-        IMetaSchemaService metaSchemaService)
+        IMetaSchemaService metaSchemaService,
+        IForgeUuidGenerator uuidGenerator
+        )
     {
         _context = context;
         _validationService = validationService;
         _metaSchemaService = metaSchemaService;
+        _uuidGenerator = uuidGenerator;
     }
 
     public async Task<MetaObjectResponse> CreateObjectAsync(
