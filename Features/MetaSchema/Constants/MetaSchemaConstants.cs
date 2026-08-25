@@ -78,8 +78,8 @@ public class MetaSchemaConstants
         public static readonly Guid HasApi = Guid.Parse("019f9b6f-1442-74f5-a1e5-300000000010");
         public static readonly Guid HasEvent = Guid.Parse("019f9b6f-1442-7b08-af59-300000000011");
         public static readonly Guid InvokesAction = Guid.Parse("019f9b6f-1442-7776-a532-300000000012");
-        public static readonly Guid RequiresAccessGroup = Guid.Parse("019f9b6f-1442-735e-af47-300000000013");
-        public static readonly Guid RequiresRole = Guid.Parse("019f9b6f-1442-7413-a012-300000000014");
-        public static readonly Guid RequiresPolicy = Guid.Parse("019f9b6f-1442-73ac-9f81-300000000015");
+        //public static readonly Guid RequiresAccessGroup = Guid.Parse("019f9b6f-1442-735e-af47-300000000013");
+        //public static readonly Guid RequiresRole = Guid.Parse("019f9b6f-1442-7413-a012-300000000014");
+        //public static readonly Guid RequiresPolicy = Guid.Parse("019f9b6f-1442-73ac-9f81-300000000015");
     }
 }
