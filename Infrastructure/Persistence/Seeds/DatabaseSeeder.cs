@@ -26,9 +26,12 @@ public static class DatabaseSeeder
 
         if (settings.ReseedMetaSchema)
         {
-            //await dbContext.MetaObjectRelationships.ExecuteDeleteAsync();
-            //await dbContext.MetaObjects.ExecuteDeleteAsync();
-            //await dbContext.Applications.ExecuteDeleteAsync();
+            await dbContext.MetaPropertyValueDetails.ExecuteDeleteAsync();
+            await dbContext.MetaPropertyValues.ExecuteDeleteAsync();
+            await dbContext.MetaInterfaces.ExecuteDeleteAsync();
+            await dbContext.MetaObjectRelationships.ExecuteDeleteAsync();
+            await dbContext.MetaObjects.ExecuteDeleteAsync();
+            await dbContext.Applications.ExecuteDeleteAsync();
         }
 
         await MetaSchemaSeeder.SeedAsync(dbContext);
