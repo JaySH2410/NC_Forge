@@ -1,9 +1,5 @@
 <Solution>
   <Project Path="Forge.csproj" />
-  <Project Path="Tests/Forge.IntegrationTests/Forge.IntegrationTests.csproj" Id="12da893b-ac91-4905-adb8-3f35a1d65822">
-    <Build Solution="Debug|*" Project="false" />
-  </Project>
-  <Project Path="Tests/Forge.UnitTests/Forge.UnitTests.csproj" Id="341416fe-8844-418f-ac37-1c435f5a4138">
-    <Build Solution="Debug|*" Project="false" />
-  </Project>
+  <Project Path="Tests/Forge.IntegrationTests/Forge.IntegrationTests.csproj" Id="12da893b-ac91-4905-adb8-3f35a1d65822" />
+  <Project Path="Tests/Forge.UnitTests/Forge.UnitTests.csproj" Id="341416fe-8844-418f-ac37-1c435f5a4138" />
 </Solution>

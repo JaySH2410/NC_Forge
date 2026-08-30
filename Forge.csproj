@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -32,7 +32,6 @@
   <ItemGroup>
     <Folder Include="Docs\API\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Features\MetaSchema\Validators\" />
     <Folder Include="Features\Demo Feature\Constants\" />
     <Folder Include="Features\Demo Feature\Contracts\" />
     <Folder Include="Features\Demo Feature\Controllers\" />
@@ -40,8 +39,6 @@
     <Folder Include="Features\Demo Feature\Entities\" />
     <Folder Include="Features\Demo Feature\Services\" />
     <Folder Include="Features\Demo Feature\Validators\" />
-    <Folder Include="Infrastructure\Persistence\Configurations\Auth\" />
-    <Folder Include="Infrastructure\Persistence\Migrations\" />
     <Folder Include="Shared\Utilities\" />
     <Folder Include="Shared\Constants\" />
   </ItemGroup>
@@ -58,8 +55,12 @@
     <None Include=".github\workflows\deploy_on_local.yml" />
     <None Include=".github\workflows\deploy_on_local_docker.yml" />
     <None Include="C:\Users\jsheth\Development\test\test\.editorconfig" />
+    <Compile Remove="Infrastructure\Persistence\Migrations\**" />
 	<Compile Remove="Tests\**" />
+	<EmbeddedResource Remove="Infrastructure\Persistence\Migrations\**" />
+	<None Remove="Infrastructure\Persistence\Migrations\**" />
 	<None Remove="Tests\**" />
+	<Content Remove="Infrastructure\Persistence\Migrations\**" />
 	<Content Remove="Tests\**" />
   </ItemGroup>
 

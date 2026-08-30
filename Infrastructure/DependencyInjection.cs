@@ -1,4 +1,4 @@
-using Forge.Features.Auth.Contracts;
+﻿using Forge.Features.Auth.Contracts;
 using Forge.Features.Auth.Services;
 using Forge.Features.MetaSchema.Contracts;
 using Forge.Features.MetaSchema.Services;
