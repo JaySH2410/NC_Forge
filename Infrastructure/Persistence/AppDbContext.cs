@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Forge.Features.Auth.Entities;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Shared.Entities;
+using Forge.Shared.Exceptions;
 
 namespace Forge.Infrastructure.Persistence;
 
@@ -20,6 +21,9 @@ public class AppDbContext : DbContext
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<MetaObject> MetaObjects => Set<MetaObject>();
     public DbSet<MetaObjectRelationship> MetaObjectRelationships => Set<MetaObjectRelationship>();
+    public DbSet<MetaInterface> MetaInterfaces => Set<MetaInterface>();
+    public DbSet<MetaPropertyValue> MetaPropertyValues => Set<MetaPropertyValue>();
+    public DbSet<MetaPropertyValueDetail> MetaPropertyValueDetails => Set<MetaPropertyValueDetail>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -42,28 +46,31 @@ public class AppDbContext : DbContext
        {
            switch (entry.State)
            {
-               case EntityState.Added:
-                   entry.Entity.CreatedAt = utcNow;
-                   entry.Entity.CreatedBy = null; // Current user
-                   break;
+                case EntityState.Added:
+                if (entry.Entity.Uuid == Guid.Empty) {
+                    throw new ValidationException(new Dictionary<string, string[]> { { "Uuid", [$"{entry.Entity.GetType().Name} was saved without a generated Uuid."] } });
+                }
+                entry.Entity.CreatedAt = utcNow;
+                        entry.Entity.CreatedBy = null; // Current user
+                        break;
 
-               case EntityState.Modified:
-                   entry.Property(x => x.CreatedAt).IsModified = false;
-                   entry.Property(x => x.CreatedBy).IsModified = false;
+                case EntityState.Modified:
+                    entry.Property(x => x.CreatedAt).IsModified = false;
+                    entry.Property(x => x.CreatedBy).IsModified = false;
 
-                   entry.Entity.UpdatedAt = utcNow;
-                   entry.Entity.UpdatedBy = null; // Current user
-                   break;
+                    entry.Entity.UpdatedAt = utcNow;
+                    entry.Entity.UpdatedBy = null; // Current user
+                    break;
 
-               case EntityState.Deleted:
-                   entry.State = EntityState.Modified;
+                case EntityState.Deleted:
+                    entry.State = EntityState.Modified;
 
-                   entry.Property(x => x.CreatedAt).IsModified = false;
-                   entry.Property(x => x.CreatedBy).IsModified = false;
+                    entry.Property(x => x.CreatedAt).IsModified = false;
+                    entry.Property(x => x.CreatedBy).IsModified = false;
 
-                   entry.Entity.DeletedAt = utcNow;
-                   entry.Entity.DeletedBy = null; // Current user
-                   break;
+                    entry.Entity.DeletedAt = utcNow;
+                    entry.Entity.DeletedBy = null; // Current user
+                    break;
            }
        }
     }
