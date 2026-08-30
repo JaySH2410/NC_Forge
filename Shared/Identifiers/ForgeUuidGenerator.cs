@@ -35,18 +35,14 @@ public sealed class ForgeUuidGenerator : IForgeUuidGenerator
         byte entityType,
         CancellationToken cancellationToken)
     {
-        var counter = await _context.UuidCounters
-            .Where(x => x.EntityType == entityType)
-            .Select(x => x.CounterValue + 1)
-            .SingleAsync(cancellationToken);
-
-        await _context.Database.ExecuteSqlInterpolatedAsync(
-            $"""
+        var counter = await _context.Database
+        .SqlQuery<long>($"""
             UPDATE UuidCounter
-            SET CounterValue = {counter}
+            SET CounterValue = CounterValue + 1
+            OUTPUT INSERTED.CounterValue
             WHERE EntityType = {entityType}
-            """,
-            cancellationToken);
+            """)
+        .SingleAsync(cancellationToken);
 
         return CreateUuidV7(entityType, counter);
     }
