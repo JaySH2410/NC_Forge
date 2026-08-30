@@ -4,8 +4,6 @@
 //used for
 //1. Creating a new MetaObjectRelationship
 public sealed class CreateMetaObjectRelationshipRequest {
-    public int Id { get; set; }
-    public Guid Uuid { get; set; }
     public required string Name { get; set; }
 
     public string? DisplayName { get; set; }

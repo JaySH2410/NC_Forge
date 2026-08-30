@@ -10,20 +10,122 @@ namespace Forge.Features.MetaSchema.Controllers;
 [ApiController]
 public class MetaSchemaController : ControllerBase
 {
-    private readonly IMetaSchemaAuthoringService _authoringService;
+    private readonly IMetaSchemaAuthoringService _metaSchemaAuthoringService;
+    private readonly IApplicationAuthoringService _appAuthoringService;
     private readonly IMetaSchemaService _metaSchemaService;
+    private readonly IApplicationService _appService;
 
-    public MetaSchemaController(IMetaSchemaAuthoringService authoringService, IMetaSchemaService metaSchemaService)
+
+    public MetaSchemaController(
+        IMetaSchemaAuthoringService metaSchemaAuthoringService,
+        IApplicationAuthoringService appAuthoringService,
+        IMetaSchemaService metaSchemaService, 
+        IApplicationService appService
+        )
     {
-        _authoringService = authoringService;
+        _metaSchemaAuthoringService = metaSchemaAuthoringService;
+        _appAuthoringService = appAuthoringService;
         _metaSchemaService = metaSchemaService;
+        _appService = appService;
+    }
+
+    [HttpGet("applications/{uuid}")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplication(
+        Guid uuid,
+        CancellationToken cancellationToken)
+    {
+        var result = await _appService.GetApplicationAsync(
+            uuid,
+            cancellationToken);
+        if (result is null)
+        {
+            throw new NotFoundException("Application not found.");
+        }
+        var resultDTO = new ApplicationResponse
+        {
+            Id = result.Id,
+            Uuid = result.Uuid,
+            Name = result.Name,
+            DisplayName = result.DisplayName,
+            Description = result.Description,
+            Version = result.Version
+        };
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            resultDTO,
+            "Application retrieved successfully."));
+    }
+
+    [HttpGet("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationByName(
+       string name,
+       CancellationToken cancellationToken)
+    {
+        var result = await _appService.GetApplicationByNameAsync(
+            name,
+            cancellationToken);
+        if (result is null)
+        {
+            throw new NotFoundException("Application not found.");
+        }
+        var resultDTO = new ApplicationResponse
+        {
+            Id = result.Id,
+            Uuid = result.Uuid,
+            Name = result.Name,
+            DisplayName = result.DisplayName,
+            Description = result.Description,
+            Version = result.Version
+        };
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            resultDTO,
+            "Application retrieved successfully."));
+    }
+
+    [HttpPost("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateApplication(
+        [FromBody] CreateApplicationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _appAuthoringService.CreateApplicationAsync(
+            request,
+            cancellationToken);
+        return StatusCode(
+            StatusCodes.Status201Created,
+            ApiResponse<ApplicationResponse>.Success(
+                result,
+                "Application created successfully."));
+    }
+    [HttpPut("applications")]
+    [ProducesResponseType(typeof(ApiResponse<ApplicationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+    public async Task<IActionResult> UpdateApplication(
+       [FromBody] UpdateApplicationRequest request,
+       CancellationToken cancellationToken)
+    {
+        var result = await _appAuthoringService.UpdateApplicationAsync(
+            request,
+            cancellationToken);
+
+        return Ok(ApiResponse<ApplicationResponse>.Success(
+            result,
+            "Application updated successfully."));
     }
 
     [HttpGet("objects/{uuid}")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
     public async Task<IActionResult> GetObject(
         Guid uuid,
         CancellationToken cancellationToken)
@@ -98,7 +200,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] CreateMetaObjectRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _authoringService.CreateObjectAsync(
+        var result = await _metaSchemaAuthoringService.CreateObjectAsync(
             request,
             cancellationToken);
 
@@ -118,7 +220,7 @@ public class MetaSchemaController : ControllerBase
        [FromBody] UpdateMetaObjectRequest request,
        CancellationToken cancellationToken)
     {
-        var result = await _authoringService.UpdateObjectAsync(
+        var result = await _metaSchemaAuthoringService.UpdateObjectAsync(
             request,
             cancellationToken);
 
@@ -137,7 +239,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.ActivateObjectAsync(
+        await _metaSchemaAuthoringService.ActivateObjectAsync(
             request,
             cancellationToken);
 
@@ -156,7 +258,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.DeactivateObjectAsync(
+        await _metaSchemaAuthoringService.DeactivateObjectAsync(
             request,
             cancellationToken);
 
@@ -246,7 +348,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _authoringService.CreateRelationshipAsync(
+        var result = await _metaSchemaAuthoringService.CreateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -267,7 +369,7 @@ public class MetaSchemaController : ControllerBase
        [FromBody] UpdateMetaObjectRelationshipRequest request,
        CancellationToken cancellationToken)
     {
-        var result = await _authoringService.UpdateRelationshipAsync(
+        var result = await _metaSchemaAuthoringService.UpdateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -285,7 +387,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.ActivateRelationshipAsync(
+        await _metaSchemaAuthoringService.ActivateRelationshipAsync(
             request,
             cancellationToken);
 
@@ -304,7 +406,7 @@ public class MetaSchemaController : ControllerBase
         [FromBody] UuidRequest request,
         CancellationToken cancellationToken)
     {
-        await _authoringService.DeactivateRelationshipAsync(
+        await _metaSchemaAuthoringService.DeactivateRelationshipAsync(
             request,
             cancellationToken);
 
