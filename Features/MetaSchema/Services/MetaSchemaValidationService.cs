@@ -28,35 +28,36 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
     }
 
     public async Task ValidateCreateObjectAsync(
-        MetaObject metaObject,
+        MetaObject newObject,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(metaObject.Name)) { 
+        if (string.IsNullOrWhiteSpace(newObject.Name)) { 
             throw new ValidationException(
                 new Dictionary<string, string[]> { { "Name", ["Name is required."] } });
         }
 
         //Checking the DisplayName is not null or empty
-        if (string.IsNullOrWhiteSpace(metaObject.DisplayName))
+        if (string.IsNullOrWhiteSpace(newObject.DisplayName))
         {
-            metaObject.DisplayName = metaObject.Name;
+            newObject.DisplayName = newObject.Name;
         }
 
         //Checking for the duplicate Uuid 
-        if (await _metaSchemaService.ObjectExistsAsync(metaObject.Uuid, cancellationToken))
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "Uuid", [$"MetaObject with Uuid '{metaObject.Uuid}' already exists."] }
-                });
-        }
+        //We are generating the Uuid after this - so not required
+        //if (await _metaSchemaService.ObjectExistsAsync(metaObject.Uuid, cancellationToken))
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]>
+        //        {
+        //            { "Uuid", [$"MetaObject with Uuid '{metaObject.Uuid}' already exists."] }
+        //        });
+        //}
 
         //Checking for the duplicate Name
         MetaObject? existingObject = await _context.MetaObjects
             .AsNoTracking()
             .FirstOrDefaultAsync(
-                x => x.Name == metaObject.Name,
+                x => x.Name == newObject.Name,
                 cancellationToken);
 
         if (existingObject is not null)
@@ -64,31 +65,33 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
             throw new ValidationException(
                 new Dictionary<string, string[]>
                 {
-                    { "Name", [$"MetaObject with name '{metaObject.Name}' already exists."] }
+                    { "Name", [$"MetaObject with name '{newObject.Name}' already exists."] }
                 });
         }
 
         //Checking for the Object Type Uid if it is provided, and if it exists in the database
-        if (!metaObject.ObjTypeUid.HasValue)
+        //If in case we are generating the Foundational Uuid, then we need to skip this
+        //if (!metaObject.ObjTypeUid.HasValue)
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]> { { "ObjTypeUid", ["Object Type is required."] } });
+        //}
+        if (newObject.ObjTypeUid.HasValue)
         {
-            throw new ValidationException(
-                new Dictionary<string, string[]> { { "ObjTypeUid", ["Object Type is required."] } });
+            var exists = await _metaSchemaService.ObjectExistsAsync(
+                newObject.ObjTypeUid.Value,
+                cancellationToken);
+
+            if (!exists)
+            {
+                throw new ValidationException(
+                    new Dictionary<string, string[]>
+                    {
+                    { "ObjTypeUid", [$"MetaObject with type '{newObject.ObjTypeUid}' does not exist."] }
+                    });
+            }
         }
-
-        var exists = await _metaSchemaService.ObjectExistsAsync(
-            metaObject.ObjTypeUid.Value,
-            cancellationToken);
-
-        if (!exists)
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "ObjTypeUid", [$"MetaObject with type '{metaObject.ObjTypeUid}' does not exist."] }
-                });
-        }
-
-        if (metaObject.ObjTypeUid == metaObject.Uuid)
+        if (newObject.ObjTypeUid == newObject.Uuid)
         {
             throw new ValidationException(
                 new Dictionary<string, string[]>
@@ -142,51 +145,52 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
     }
     
     public async Task ValidateCreateRelationshipAsync(
-        MetaObjectRelationship relationship,
+        MetaObjectRelationship newRel,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(relationship.Name))
+        if (string.IsNullOrWhiteSpace(newRel.Name))
         {
             throw new ValidationException(
                 new Dictionary<string, string[]> { { "Name", ["Name is required."] } });
         }
 
         //Checking the DisplayName is not null or empty
-        if (string.IsNullOrWhiteSpace(relationship.DisplayName))
+        if (string.IsNullOrWhiteSpace(newRel.DisplayName))
         {
-            relationship.DisplayName = relationship.Name;
+            newRel.DisplayName = newRel.Name;
         }
 
         //Checking for the duplicate Uuid 
-        if (await _metaSchemaService.ObjectExistsAsync(relationship.Uuid, cancellationToken))
-        {
-            throw new ValidationException(
-                new Dictionary<string, string[]>
-                {
-                    { "Uuid", [$"MetaRelationship with Uuid '{relationship.Uuid}' already exists."] }
-                });
-        }
+        //We are generating the Uuid after this - so not required
+        //if (await _metaSchemaService.ObjectExistsAsync(relationship.Uuid, cancellationToken))
+        //{
+        //    throw new ValidationException(
+        //        new Dictionary<string, string[]>
+        //        {
+        //            { "Uuid", [$"MetaRelationship with Uuid '{relationship.Uuid}' already exists."] }
+        //        });
+        //}
 
         // End1 must exist
         if (!await _metaSchemaService.ObjectExistsAsync(
-                relationship.End1Uid,
+                newRel.End1Uid,
                 cancellationToken))
         {
             throw new ValidationException(
-                new Dictionary<string, string[]> { { "End1Uid", [$"Source object '{relationship.End1Uid}' does not exist."] } });
+                new Dictionary<string, string[]> { { "End1Uid", [$"Source object '{newRel.End1Uid}' does not exist."] } });
         }
 
         // End2 must exist
         if (!await _metaSchemaService.ObjectExistsAsync(
-                relationship.End2Uid,
+                newRel.End2Uid,
                 cancellationToken))
         {
             throw new ValidationException(
-                new Dictionary<string, string[]> { { "End2Uid", [$"Target object '{relationship.End2Uid}' does not exist."] } });
+                new Dictionary<string, string[]> { { "End2Uid", [$"Target object '{newRel.End2Uid}' does not exist."] } });
         }
 
         //Relationship Type should not be null or empty
-        if (string.IsNullOrWhiteSpace(relationship.RelTypeUid.ToString()))
+        if (string.IsNullOrWhiteSpace(newRel.RelTypeUid.ToString()))
         {
             throw new ValidationException(
                 new Dictionary<string, string[]> { { "RelTypeUid", ["Relationship type is required."] } });
@@ -194,11 +198,11 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
 
         // Relationship Type must exist
         if (!await _metaSchemaService.ObjectExistsAsync(
-                relationship.RelTypeUid,
+                newRel.RelTypeUid,
                 cancellationToken))
         {
             throw new ValidationException(
-                new Dictionary<string, string[]> { { "RelTypeUid", [$"Relationship type '{relationship.RelTypeUid}' does not exist."] } });
+                new Dictionary<string, string[]> { { "RelTypeUid", [$"Relationship type '{newRel.RelTypeUid}' does not exist."] } });
         }
 
         // Duplicate relationship
@@ -206,9 +210,9 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
             .AsNoTracking()
             .AnyAsync(
                 x =>
-                    x.End1Uid == relationship.End1Uid &&
-                    x.End2Uid == relationship.End2Uid &&
-                    x.RelTypeUid == relationship.RelTypeUid,
+                    x.End1Uid == newRel.End1Uid &&
+                    x.End2Uid == newRel.End2Uid &&
+                    x.RelTypeUid == newRel.RelTypeUid,
                 cancellationToken);
 
         if (relationshipExists)

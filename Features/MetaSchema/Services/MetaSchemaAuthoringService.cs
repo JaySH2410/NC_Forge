@@ -4,6 +4,7 @@ using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
+using Forge.Shared.Identifiers;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -24,19 +25,21 @@ namespace Forge.Features.MetaSchema.Services;
 public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 {
     private readonly AppDbContext _context;
-
     private readonly IMetaSchemaValidationService _validationService;
-
     private readonly IMetaSchemaService _metaSchemaService;
+    private readonly IForgeUuidGenerator _uuidGenerator;
 
     public MetaSchemaAuthoringService(
         AppDbContext context,
         IMetaSchemaValidationService validationService,
-        IMetaSchemaService metaSchemaService)
+        IMetaSchemaService metaSchemaService,
+        IForgeUuidGenerator uuidGenerator
+        )
     {
         _context = context;
         _validationService = validationService;
         _metaSchemaService = metaSchemaService;
+        _uuidGenerator = uuidGenerator;
     }
 
     public async Task<MetaObjectResponse> CreateObjectAsync(
@@ -45,7 +48,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     {
         MetaObject metaObjectEntity = new MetaObject
         {
-            Uuid = metaObject.Uuid,
+            //Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken),
             Name = metaObject.Name,
             DisplayName = metaObject.DisplayName,
             Description = metaObject.Description,
@@ -56,7 +59,9 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         await _validationService.ValidateCreateObjectAsync(
             metaObjectEntity,
             cancellationToken);
-            
+
+        metaObjectEntity.Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken);
+
         _context.MetaObjects.Add(metaObjectEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -189,7 +194,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     {
         MetaObjectRelationship requestEntity = new MetaObjectRelationship
         {
-            Uuid = request.Uuid,
+            //Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken),
             Name = request.Name,
             DisplayName = request.DisplayName,
             Description = request.Description,
@@ -202,6 +207,8 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             requestEntity,
             cancellationToken);
 
+        requestEntity.Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken);
+        
         _context.MetaObjectRelationships.Add(requestEntity);
 
         await _context.SaveChangesAsync(cancellationToken);

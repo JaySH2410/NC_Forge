@@ -16,7 +16,6 @@ namespace Forge.Features.MetaSchema.Services;
 public class MetaSchemaService : IMetaSchemaService
 {
    private readonly IGraphTraversalService _graphTraversalService;
-
    private readonly AppDbContext _context;
 
    public MetaSchemaService(
