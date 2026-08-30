@@ -9,6 +9,8 @@ public sealed class MetaObjectRelationshipConfiguration : IEntityTypeConfigurati
     public void Configure(EntityTypeBuilder<MetaObjectRelationship> builder)
     {
        builder.ToTable("MetaObjectRelationship");
+        builder.HasKey(x => x.Id);
+
        builder.Property(x => x.Uuid).HasColumnName("RelUid");
 
         builder.HasIndex(x => x.Uuid).IsUnique();

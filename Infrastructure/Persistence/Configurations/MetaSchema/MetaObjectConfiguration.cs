@@ -9,6 +9,7 @@ public class MetaObjectConfiguration: IEntityTypeConfiguration<MetaObject>
     public void Configure(EntityTypeBuilder<MetaObject> builder)
     {
         builder.ToTable("MetaObject");
+        builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Uuid).HasColumnName("ObjUid");
 
