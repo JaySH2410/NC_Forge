@@ -8,13 +8,13 @@ public class UpdateHobbyRequestValidator
 {
     public UpdateHobbyRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .HobbyIdRules();
+        // RuleFor(x => x.Id)
+        //     .HobbyIdRules();
 
-        RuleFor(x => x.Name)
-            .HobbyNameRules();
+        // RuleFor(x => x.Name)
+        //     .HobbyNameRules();
 
-        RuleFor(x => x.Description)
-            .HobbyDescriptionRules();
+        // RuleFor(x => x.Description)
+        //     .HobbyDescriptionRules();
     }
 }

@@ -84,7 +84,7 @@ public class RefreshTokenService : IRefreshTokenService
         refreshToken.ReplacedByTokenHash = null;
         refreshToken.RevokedReason = reason;
     }
-    public async Task RevokeAllUserRefreshTokensAsync(int userId,string reason,CancellationToken cancellationToken = default)
+    public async Task RevokeAllUserRefreshTokensAsync(long userId,string reason,CancellationToken cancellationToken = default)
     {
         var refreshTokens = await _dbContext.RefreshTokens
             .Where(x =>

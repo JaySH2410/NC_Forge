@@ -22,7 +22,7 @@ public interface IRefreshTokenService
         string reason);
 
     Task RevokeAllUserRefreshTokensAsync(
-    int userId,
+        long userId,
         string reason,
         CancellationToken cancellationToken = default);
 }

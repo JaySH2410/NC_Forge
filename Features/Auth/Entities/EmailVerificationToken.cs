@@ -10,7 +10,7 @@ public class EmailVerificationToken: AuditableEntity
 
     public DateTimeOffset? UsedAt { get; set; }
 
-    public int UserId { get; set; }
+    public long UserId { get; set; }
 
     public User User { get; set; } = null!;
 }
