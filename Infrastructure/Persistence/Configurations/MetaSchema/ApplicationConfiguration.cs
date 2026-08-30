@@ -9,5 +9,7 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
     public void Configure(EntityTypeBuilder<Application> builder)
     {
         builder.ToTable("Application");
+        builder.HasIndex(x => x.Uuid).IsUnique();
+        builder.HasIndex(x => x.IsActive);
     }
 }
