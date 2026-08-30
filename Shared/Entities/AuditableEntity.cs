@@ -12,5 +12,5 @@ public abstract class AuditableEntity : BaseEntity
 
     public DateTimeOffset? DeletedAt { get; set; }
     
-    public string? DeletedBy { get; set; }
+    public int? DeletedBy { get; set; }
 }
