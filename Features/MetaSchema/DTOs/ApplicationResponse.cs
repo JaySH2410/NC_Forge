@@ -2,7 +2,7 @@
 
 public sealed class ApplicationResponse
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public Guid Uuid { get; set; }
 

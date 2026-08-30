@@ -2,7 +2,7 @@
 
 public class CurrentUserResponse
 {
-    public int Id { get; init; }
+    public long Id { get; init; }
 
     public required string FirstName { get; init; }
 

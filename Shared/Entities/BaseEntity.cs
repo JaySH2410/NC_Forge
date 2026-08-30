@@ -2,6 +2,6 @@
 
 public abstract class BaseEntity
 {
-    public int Id { get; set; }
-    public Guid Uuid { get; set; } = Guid.CreateVersion7();
+    public long Id { get; set; }
+    public Guid Uuid { get; set; }
 }

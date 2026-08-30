@@ -7,7 +7,7 @@
 //4. Updating an existing MetaObject
 public sealed class MetaObjectResponse
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public Guid Uuid { get; set; }
     public required string Name { get; set; }
     public string? DisplayName { get; set; }

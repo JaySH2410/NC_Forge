@@ -2,7 +2,7 @@
 
 public class HobbyResponse
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public required string Name { get; set; }
 
