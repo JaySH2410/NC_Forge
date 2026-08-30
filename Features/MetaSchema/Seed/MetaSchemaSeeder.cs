@@ -14,6 +14,8 @@ public static class MetaSchemaSeeder
         await SeedMetaObjectsAsync(dbContext, cancellationToken);
 
         await SeedMetaObjectRelationshipsAsync(dbContext, cancellationToken);
+
+        await SeedMetaInterfacesAsync(dbContext, cancellationToken);
     }
 
     private static async Task SeedApplicationsAsync(
@@ -51,6 +53,20 @@ public static class MetaSchemaSeeder
     {
         await dbContext.MetaObjectRelationships.AddRangeAsync(
             MetaObjectRelationshipSeeder.GetMetaObjectRelationships(),
+            cancellationToken);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task SeedMetaInterfacesAsync(
+        AppDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        if (await dbContext.MetaInterfaces.AnyAsync(cancellationToken))
+            return;
+
+        await dbContext.MetaInterfaces.AddRangeAsync(
+            MetaInterfaceSeeder.GetMetaInterfaces(),
             cancellationToken);
 
         await dbContext.SaveChangesAsync(cancellationToken);
