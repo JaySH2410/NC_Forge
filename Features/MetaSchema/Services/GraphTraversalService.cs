@@ -35,6 +35,8 @@ public class GraphTraversalService : IGraphTraversalService
                 on relationship.End1Uid equals source.Uuid
             where relationship.End2Uid == targetUid
                   && relationship.RelTypeUid == relationshipTypeUid
+                  && relationship.IsActive
+                  && source.IsActive
             select source
         ).ToListAsync(cancellationToken);
     }
@@ -52,6 +54,8 @@ public class GraphTraversalService : IGraphTraversalService
                 on relationship.End2Uid equals target.Uuid
             where relationship.End1Uid == sourceUid
                   && relationship.RelTypeUid == relationshipTypeUid
+                  && relationship.IsActive
+                  && target.IsActive
             select target
         ).ToListAsync(cancellationToken);
     }
@@ -64,6 +68,7 @@ public class GraphTraversalService : IGraphTraversalService
         return await _context.MetaObjectRelationships
             .AsNoTracking()
             .Where(x => x.End2Uid == targetUid)
+            .Where(x => x.IsActive)
             .ToListAsync(cancellationToken);
     }
 
@@ -75,6 +80,7 @@ public class GraphTraversalService : IGraphTraversalService
         return await _context.MetaObjectRelationships
             .AsNoTracking()
             .Where(x => x.End1Uid == sourceUid)
+            .Where(x => x.IsActive)
             .ToListAsync(cancellationToken);
     }
 }

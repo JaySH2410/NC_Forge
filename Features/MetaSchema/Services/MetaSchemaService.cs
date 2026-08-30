@@ -34,6 +34,7 @@ public class MetaSchemaService : IMetaSchemaService
             //.AsNoTracking()
             .FirstOrDefaultAsync(
             x => x.Uuid == objUid,
+            //&& x.IsActive == true,
             cancellationToken);
    }
 
@@ -45,6 +46,7 @@ public class MetaSchemaService : IMetaSchemaService
             //.AsNoTracking()
             .FirstOrDefaultAsync(
             x => x.Uuid == relUid,
+            //&& x.IsActive == true,
             cancellationToken);
     }
 
@@ -56,6 +58,7 @@ public class MetaSchemaService : IMetaSchemaService
             .AsNoTracking()
             .FirstOrDefaultAsync(
                 x => x.Name == name,
+                //&& x.IsActive == true,
                 cancellationToken);
     }
 
@@ -67,6 +70,7 @@ public class MetaSchemaService : IMetaSchemaService
             .AsNoTracking()
             .FirstOrDefaultAsync(
                 x => x.Name == name,
+                //&& x.IsActive == true,
                 cancellationToken);
     }
 

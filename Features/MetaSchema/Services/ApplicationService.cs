@@ -21,6 +21,7 @@ public class ApplicationService: IApplicationService
             //.AsNoTracking()
             .FirstOrDefaultAsync(
             x => x.Uuid == Uid,
+            //&& x.IsActive == true,
             cancellationToken);
     }
     public async Task<Application?> GetApplicationByNameAsync(
@@ -31,6 +32,7 @@ public class ApplicationService: IApplicationService
             .AsNoTracking()
             .FirstOrDefaultAsync(
                 x => x.Name == name,
+                //&& x.IsActive == true,
                 cancellationToken);
     }
 }
