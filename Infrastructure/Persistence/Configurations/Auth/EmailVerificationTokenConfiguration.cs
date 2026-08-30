@@ -11,5 +11,14 @@ public class EmailVerificationTokenConfiguration
         EntityTypeBuilder<EmailVerificationToken> builder)
     {
         builder.ToTable("EmailVerificationToken");
+
+        builder.HasIndex(x => x.Uuid).IsUnique();
+        builder.HasIndex(x => x.TokenHash).IsUnique();
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.EmailVerificationTokens)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

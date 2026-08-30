@@ -13,5 +13,14 @@ public class RefreshTokenConfiguration
         
         builder.ToTable("RefreshToken");
 
+        builder.HasIndex(x => x.Uuid).IsUnique();
+        builder.HasIndex(x => x.TokenHash).IsUnique();
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.RefreshTokens)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

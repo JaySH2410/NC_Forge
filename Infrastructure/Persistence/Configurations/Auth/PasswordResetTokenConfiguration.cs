@@ -10,7 +10,15 @@ public class PasswordResetTokenConfiguration
     public void Configure(
         EntityTypeBuilder<PasswordResetToken> builder)
     {
-        
         builder.ToTable("PasswordResetToken");
+
+        builder.HasIndex(x => x.Uuid).IsUnique();
+        builder.HasIndex(x => x.TokenHash).IsUnique();
+        builder.HasIndex(x => x.UserId);
+
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.PasswordResetTokens)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
