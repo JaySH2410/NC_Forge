@@ -415,4 +415,22 @@ public class MetaSchemaController : ControllerBase
             ApiResponse.Success("MetaRelationship deactivated successfully.")
         );
     }
+
+    [HttpPost("interface-implementations")]
+    [ProducesResponseType(typeof(ApiResponse<InterfaceImplementationResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateInterfaceImplementation(
+        [FromBody] CreateInterfaceImplementationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _metaSchemaAuthoringService
+            .CreateInterfaceImplementationAsync(request, cancellationToken);
+
+        return StatusCode(
+            StatusCodes.Status201Created,
+            ApiResponse<InterfaceImplementationResponse>.Success(
+                result,
+                "Interface implementation created successfully."));
+    }
 }

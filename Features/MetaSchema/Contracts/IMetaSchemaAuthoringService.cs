@@ -44,4 +44,8 @@ public interface IMetaSchemaAuthoringService
     Task TerminateRelationshipAsync(
         UuidRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<InterfaceImplementationResponse> CreateInterfaceImplementationAsync(
+        CreateInterfaceImplementationRequest request,
+        CancellationToken cancellationToken = default);
 }

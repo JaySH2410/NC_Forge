@@ -1,12 +1,12 @@
 
 using Forge.Features.MetaSchema.Contracts;
+using Forge.Features.MetaSchema.Constants;
 using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
 using Forge.Shared.Identifiers;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -315,6 +315,112 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         //      │
         //      ▼
         //SaveChanges()
+    }
+
+    public async Task<InterfaceImplementationResponse> CreateInterfaceImplementationAsync(
+        CreateInterfaceImplementationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var objects = await _context.MetaObjects
+            .AsNoTracking()
+            .Where(x => x.Uuid == request.ObjUid || x.Uuid == request.InterfaceUid)
+            .Select(x => x.Uuid)
+            .ToListAsync(cancellationToken);
+
+        if (!objects.Contains(request.ObjUid))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "ObjUid", [$"Object '{request.ObjUid}' does not exist."] } });
+        }
+
+        if (!objects.Contains(request.InterfaceUid))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "InterfaceUid", [$"Interface '{request.InterfaceUid}' does not exist."] } });
+        }
+
+        if (await _context.MetaInterfaces.AsNoTracking().AnyAsync(
+                x => x.ObjUid == request.ObjUid && x.InterfaceUid == request.InterfaceUid,
+                cancellationToken))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "InterfaceImplementation", ["This object already implements the interface."] } });
+        }
+
+        if (request.IsPrimary && await _context.MetaInterfaces.AsNoTracking().AnyAsync(
+                x => x.ObjUid == request.ObjUid && x.IsPrimary && x.IsActive,
+                cancellationToken))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "IsPrimary", ["The object already has a primary interface."] } });
+        }
+
+        var implementsRelationship = CreateCapabilityRelationship(
+            request,
+            "Implements",
+            MetaSchemaConstants.RelationshipTypes.Implements);
+        await _validationService.ValidateCreateRelationshipAsync(implementsRelationship, cancellationToken);
+        implementsRelationship.Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken);
+
+        MetaObjectRelationship? primaryRelationship = null;
+        if (request.IsPrimary)
+        {
+            primaryRelationship = CreateCapabilityRelationship(
+                request,
+                "PrimaryInterface",
+                MetaSchemaConstants.RelationshipTypes.PrimaryInterface);
+            await _validationService.ValidateCreateRelationshipAsync(primaryRelationship, cancellationToken);
+            primaryRelationship.Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken);
+        }
+
+        var projection = new MetaInterface
+        {
+            Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken),
+            ObjUid = request.ObjUid,
+            InterfaceUid = request.InterfaceUid,
+            IsPrimary = request.IsPrimary,
+            Ordinal = request.Ordinal,
+            IsActive = true
+        };
+
+        _context.MetaObjectRelationships.Add(implementsRelationship);
+        if (primaryRelationship is not null)
+        {
+            _context.MetaObjectRelationships.Add(primaryRelationship);
+        }
+        _context.MetaInterfaces.Add(projection);
+
+        // A single SaveChanges call makes the source edges and projection atomic.
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return new InterfaceImplementationResponse
+        {
+            Id = projection.Id,
+            IfUid = projection.Uuid,
+            ObjUid = projection.ObjUid,
+            InterfaceUid = projection.InterfaceUid,
+            IsPrimary = projection.IsPrimary,
+            Ordinal = projection.Ordinal,
+            ImplementsRelationshipUid = implementsRelationship.Uuid,
+            PrimaryInterfaceRelationshipUid = primaryRelationship?.Uuid
+        };
+    }
+
+    private static MetaObjectRelationship CreateCapabilityRelationship(
+        CreateInterfaceImplementationRequest request,
+        string relationshipName,
+        Guid relationshipTypeUid)
+    {
+        return new MetaObjectRelationship
+        {
+            Name = $"{relationshipName}:{request.ObjUid:N}:{request.InterfaceUid:N}",
+            DisplayName = relationshipName,
+            End1Uid = request.ObjUid,
+            End2Uid = request.InterfaceUid,
+            RelTypeUid = relationshipTypeUid,
+            Ordinal = request.Ordinal,
+            IsActive = true
+        };
     }
 
     //private async Task<MetaObjectRelationship> GetRelationshipOrThrowAsync(UuidRequest request, CancellationToken cancellationToken)
