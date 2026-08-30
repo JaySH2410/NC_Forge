@@ -82,4 +82,10 @@ public class MetaSchemaConstants
         //public static readonly Guid RequiresRole = Guid.Parse("019f9b6f-1442-7413-a012-300000000014");
         //public static readonly Guid RequiresPolicy = Guid.Parse("019f9b6f-1442-73ac-9f81-300000000015");
     }
+
+    public static class InterfaceImplementations
+    {
+        public static readonly Guid ClassImplementsInterface =
+            Guid.Parse("019f9b6f-1442-7ad8-b5f8-400000000001");
+    }
 }
