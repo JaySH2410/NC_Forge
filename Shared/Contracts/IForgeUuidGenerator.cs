@@ -10,4 +10,7 @@ public interface IForgeUuidGenerator
 
     Task<Guid> GenerateRelationshipUuidAsync(
         CancellationToken cancellationToken = default);
+
+    Task<Guid> GenerateInterfaceUuidAsync(
+        CancellationToken cancellationToken = default);
 }

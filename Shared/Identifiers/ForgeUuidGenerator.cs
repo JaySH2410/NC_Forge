@@ -1,6 +1,7 @@
 ﻿using Forge.Infrastructure.Persistence;
 using Forge.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Forge.Shared.Identifiers;
 
@@ -31,20 +32,62 @@ public sealed class ForgeUuidGenerator : IForgeUuidGenerator
             ForgeUuidEntityTypeEntity.Relationship,
             cancellationToken);
 
+    public Task<Guid> GenerateInterfaceUuidAsync(
+        CancellationToken cancellationToken = default)
+        => GenerateAsync(
+            ForgeUuidEntityTypeEntity.Interface,
+            cancellationToken);
+
     private async Task<Guid> GenerateAsync(
         byte entityType,
         CancellationToken cancellationToken)
     {
-        var counter = await _context.Database
-        .SqlQuery<long>($"""
-            UPDATE UuidCounter
-            SET CounterValue = CounterValue + 1
-            OUTPUT INSERTED.CounterValue
-            WHERE EntityType = {entityType}
-            """)
-        .SingleAsync(cancellationToken);
+        var connection = _context.Database.GetDbConnection();
+        var closeConnection = connection.State != System.Data.ConnectionState.Open;
 
-        return CreateUuidV7(entityType, counter);
+        if (closeConnection)
+        {
+            await connection.OpenAsync(cancellationToken);
+        }
+
+        try
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = """
+                UPDATE dbo.UuidCounter
+                SET CounterValue = CounterValue + 1
+                OUTPUT INSERTED.CounterValue
+                WHERE EntityType = @entityType;
+                """;
+
+            var transaction = _context.Database.CurrentTransaction;
+            if (transaction is not null)
+            {
+                command.Transaction = transaction.GetDbTransaction();
+            }
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@entityType";
+            parameter.DbType = System.Data.DbType.Byte;
+            parameter.Value = entityType;
+            command.Parameters.Add(parameter);
+
+            var result = await command.ExecuteScalarAsync(cancellationToken);
+            if (result is null || result == DBNull.Value)
+            {
+                throw new InvalidOperationException(
+                    $"UUID counter for entity type '{entityType}' does not exist.");
+            }
+
+            return CreateUuidV7(entityType, Convert.ToInt64(result));
+        }
+        finally
+        {
+            if (closeConnection)
+            {
+                await connection.CloseAsync();
+            }
+        }
     }
 
     private static Guid CreateUuidV7(byte entityType, long counter)
