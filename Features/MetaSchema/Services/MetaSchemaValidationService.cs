@@ -222,6 +222,45 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
     }
 
+    public async Task ValidateCreateInterfaceImplementationAsync(
+        CreateInterfaceImplementationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var objects = await _context.MetaObjects
+            .AsNoTracking()
+            .Where(x => x.Uuid == request.ObjUid || x.Uuid == request.InterfaceUid)
+            .Select(x => x.Uuid)
+            .ToListAsync(cancellationToken);
+
+        if (!objects.Contains(request.ObjUid))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "ObjUid", [$"Object '{request.ObjUid}' does not exist."] } });
+        }
+
+        if (!objects.Contains(request.InterfaceUid))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "InterfaceUid", [$"Interface '{request.InterfaceUid}' does not exist."] } });
+        }
+
+        if (await _context.MetaInterfaces.AsNoTracking().AnyAsync(
+                x => x.ObjUid == request.ObjUid && x.InterfaceUid == request.InterfaceUid,
+                cancellationToken))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "InterfaceImplementation", ["This object already implements the interface."] } });
+        }
+
+        if (request.IsPrimary && await _context.MetaInterfaces.AsNoTracking().AnyAsync(
+                x => x.ObjUid == request.ObjUid && x.IsPrimary && x.IsActive,
+                cancellationToken))
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "IsPrimary", ["The object already has a primary interface."] } });
+        }
+    }
+
     public async Task ValidateUpdateRelationshipAsync(
         MetaObjectRelationship existingRel,
         UpdateMetaObjectRelationshipRequest request,

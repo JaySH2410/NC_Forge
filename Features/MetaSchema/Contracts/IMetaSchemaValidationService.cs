@@ -30,6 +30,10 @@ public interface IMetaSchemaValidationService
         MetaObjectRelationship relationship,
         CancellationToken cancellationToken = default);
 
+    Task ValidateCreateInterfaceImplementationAsync(
+        CreateInterfaceImplementationRequest request,
+        CancellationToken cancellationToken = default);
+
     Task ValidateUpdateRelationshipAsync(
         MetaObjectRelationship existingRel,
         UpdateMetaObjectRelationshipRequest request,
