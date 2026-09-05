@@ -35,7 +35,7 @@ Examples:
 - EF entity configurations must manually match SSDT column names, types, nullability, alternate keys, foreign keys, indexes, and delete behavior.
 - Existing files under `Infrastructure/Persistence/Migrations` are legacy and excluded from compilation.
 
-The `ForgeDB` SSDT project is not currently present in this workspace. The SQL below defines the required schema, but the matching SSDT files must still be added to the database-project repository.
+The external `ForgeDB` SSDT project is available in the separate `DB_Forge` repository. Its table scripts and generated `.dacpac` are the database schema source of truth; the SQL below documents the schema that the EF model must match.
 
 ## 3. Meta-schema storage model
 
@@ -63,14 +63,16 @@ The authoritative generic relationship graph. It stores all relationship facts, 
 
 ### `MetaInterface`
 
-`MetaInterface` is a narrow materialized projection used for frequent Class↔Interface capability checks. It is not the source of truth: the matching `Implements` and optional `PrimaryInterface` edges remain in `MetaObjectRelationship`.
+`MetaInterface` is a narrow materialized projection used for frequent Class↔Interface capability checks. It is not the source of truth. Each implementation has exactly one authoritative `MetaObjectRelationship`: `Implements` for a non-primary implementation or `PrimaryInterface` for a primary implementation.
+
+`MetaInterface.IsPrimary` projects which of those two relationship types is authoritative for the implementation; it does not replace the `PrimaryInterface` relationship type.
 
 The source edges and projection must be created, updated, activated, deactivated, and deleted atomically. `MetaInterface` must not expose an independent write path.
 
 ```sql
 CREATE TABLE [dbo].[MetaInterface]
 (
-    [Id]           INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Id]           BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
     [IfUid]        UNIQUEIDENTIFIER NOT NULL,
     [ObjUid]       UNIQUEIDENTIFIER NOT NULL,
     [InterfaceUid] UNIQUEIDENTIFIER NOT NULL,
@@ -132,6 +134,7 @@ CREATE TABLE [dbo].[MetaPropertyValue]
     [ValueDateTime] DATETIMEOFFSET NULL,
     [Uom]           NVARCHAR(128) NULL,
     [IsExtended]    BIT NOT NULL DEFAULT 0,
+    [IsActive]      BIT NOT NULL DEFAULT 1,
     [CreatedAt]     DATETIMEOFFSET NOT NULL,
     [CreatedBy]     INT NULL,
     [UpdatedAt]     DATETIMEOFFSET NULL,
@@ -161,7 +164,7 @@ CREATE NONCLUSTERED INDEX [IX_MetaPropertyValue_PropertyUid]
 GO
 ```
 
-`MetaPropertyValue.Id` is intentionally `BIGINT`. This must not be implemented by changing every shared `BaseEntity.Id` to `long`; use an entity-specific key or a generic base-key design so existing `INT` entities remain compatible.
+Entity primary keys use `BIGINT`, including `MetaPropertyValue.Id`, and the shared `BaseEntity.Id` is mapped as `long`.
 
 ### `MetaPropertyValueDetail`
 
@@ -188,10 +191,12 @@ One call must:
 1. Validate the object and interface.
 2. Reject duplicate object/interface implementations.
 3. Enforce at most one active primary interface per object.
-4. Create the authoritative `Implements` relationship.
-5. Create `PrimaryInterface` when requested.
-6. Create the matching `MetaInterface` projection.
-7. Persist all rows in one transaction/save operation.
+4. Create exactly one authoritative relationship:
+   - `Implements` for a non-primary interface implementation.
+   - `PrimaryInterface` for a primary interface implementation.
+5. Create the matching `MetaInterface` projection.
+6. Persist the relationship and projection in one explicit transaction. The shared
+   relationship creation path saves the relationship before the projection is saved.
 
 Generic relationship authoring must reject direct creation of `Implements` and `PrimaryInterface`; otherwise callers can bypass projection synchronization.
 
@@ -206,21 +211,19 @@ Implemented or partially implemented:
 - Composite `(ObjUid, IfUid)` EF relationship.
 - `MetaInterfaceSeeder` and reseed deletion ordering.
 - Interface-implementation request, response, validator, service method, and controller endpoint.
-- Atomic single-save creation of source edges and the projection.
+- Transactional creation of one source edge and the projection through the shared
+  relationship creation path.
 - Atomic UUID counter update using `UPDATE ... OUTPUT`.
+- Dedicated `GenerateInterfaceUuidAsync` generation using UUID entity type `4` for `MetaInterface.IfUid`.
+- SSDT table scripts for `MetaInterface`, `MetaPropertyValue`, and `MetaPropertyValueDetail`.
+- Unique `(ObjUid, IfUid)` principal key and matching composite `MetaPropertyValue` foreign key.
+- `MetaPropertyValue.IsActive`, inherited through `ActivatableEntity` and mapped to the SSDT column.
 - Empty-UUID guard in `AppDbContext.SaveChangesAsync`.
 
-Known implementation corrections still required:
+Outstanding implementation work:
 
-- Restore shared entity key types expected by existing tables and consumers; the current global `long BaseEntity.Id` change breaks the build.
-- Give `MetaPropertyValue` its required `long` key without changing unrelated entities.
-- Remove the duplicate lowercase `MetaInterface.isPrimary`; retain only `IsPrimary`.
-- Align `MetaPropertyValue` with SQL: `double? ValueFloat`, `DateTimeOffset? ValueDateTime`, and `bool IsExtended`.
-- Decide whether `Ordinal` and `IsActive` belong in `MetaPropertyValue`; they are not part of the finalized SQL above.
-- Rename files that contain a trailing space before `.cs`.
-- Make relationship/projection seeding atomic.
-- Add the actual SSDT table scripts and project entries.
-- Prevent generic relationship writes from bypassing interface projection synchronization.
+- Make relationship/projection seeding atomic and align it with the one-relationship model (GitHub issue #19).
+- Prevent generic relationship writes from bypassing interface projection synchronization (GitHub issue #18).
 - Implement synchronized update/deactivate/activate/delete operations.
 
 ## 6. Testing strategy
@@ -228,7 +231,7 @@ Known implementation corrections still required:
 Unit tests are intentionally scheduled for a dedicated testing sprint. That sprint should cover:
 
 - Successful interface implementation creation.
-- Primary and non-primary paths.
+- Primary and non-primary paths, each producing exactly one relationship.
 - Duplicate implementation rejection.
 - Multiple-primary rejection.
 - Missing object/interface validation.
