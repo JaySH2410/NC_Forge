@@ -226,6 +226,16 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 new Dictionary<string, string[]> { { "RelTypeUid", [$"Relationship type '{newRel.RelTypeUid}' does not exist."] } });
         }
 
+        if (newRel.RelTypeUid == newRel.End1Uid ||
+            newRel.RelTypeUid == newRel.End2Uid)
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "RelTypeUid", ["Relationship type cannot be the same as either relationship endpoint."] }
+                });
+        }
+
         // Duplicate relationship
         var relationshipExists = await _context.MetaObjectRelationships
             .AsNoTracking()
