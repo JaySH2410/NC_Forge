@@ -1,4 +1,5 @@
 using Forge.Features.MetaSchema.Contracts;
+using Forge.Features.MetaSchema.Constants;
 using Forge.Features.MetaSchema.DTOs;
 using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
@@ -78,16 +79,36 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         //}
         if (newObject.ObjTypeUid.HasValue)
         {
-            var exists = await _metaSchemaService.ObjectExistsAsync(
-                newObject.ObjTypeUid.Value,
-                cancellationToken);
+            var typeObject = await _context.MetaObjects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    x => x.Uuid == newObject.ObjTypeUid.Value,
+                    cancellationToken);
 
-            if (!exists)
+            if (typeObject is null)
             {
                 throw new ValidationException(
                     new Dictionary<string, string[]>
                     {
-                    { "ObjTypeUid", [$"MetaObject with type '{newObject.ObjTypeUid}' does not exist."] }
+                        { "ObjTypeUid", [$"Object type '{newObject.ObjTypeUid}' does not exist."] }
+                    });
+            }
+
+            if (!typeObject.IsActive)
+            {
+                throw new ValidationException(
+                    new Dictionary<string, string[]>
+                    {
+                        { "ObjTypeUid", [$"Object type '{newObject.ObjTypeUid}' is inactive."] }
+                    });
+            }
+
+            if (typeObject.ObjTypeUid.HasValue)
+            {
+                throw new ValidationException(
+                    new Dictionary<string, string[]>
+                    {
+                        { "ObjTypeUid", ["ObjTypeUid must reference a root object whose ObjTypeUid is null."] }
                     });
             }
         }
@@ -222,6 +243,28 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         }
     }
 
+    public void ValidateGenericRelationshipAuthoringAllowed(
+        Guid relationshipTypeUid)
+    {
+        if (relationshipTypeUid != MetaSchemaConstants.RelationshipTypes.Implements &&
+            relationshipTypeUid != MetaSchemaConstants.RelationshipTypes.PrimaryInterface)
+        {
+            return;
+        }
+
+        throw new ValidationException(
+            new Dictionary<string, string[]>
+            {
+                {
+                    "RelTypeUid",
+                    [
+                        "Implements and PrimaryInterface relationships must be managed " +
+                        "through /api/MetaSchema/interface-implementations."
+                    ]
+                }
+            });
+    }
+
     public async Task ValidateCreateInterfaceImplementationAsync(
         CreateInterfaceImplementationRequest request,
         CancellationToken cancellationToken = default)
@@ -229,19 +272,61 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
         var objects = await _context.MetaObjects
             .AsNoTracking()
             .Where(x => x.Uuid == request.ObjUid || x.Uuid == request.InterfaceUid)
-            .Select(x => x.Uuid)
             .ToListAsync(cancellationToken);
 
-        if (!objects.Contains(request.ObjUid))
+        var implementingObject = objects.FirstOrDefault(x => x.Uuid == request.ObjUid);
+        if (implementingObject is null)
         {
             throw new ValidationException(
                 new Dictionary<string, string[]> { { "ObjUid", [$"Object '{request.ObjUid}' does not exist."] } });
         }
 
-        if (!objects.Contains(request.InterfaceUid))
+        var interfaceObject = objects.FirstOrDefault(x => x.Uuid == request.InterfaceUid);
+        if (interfaceObject is null)
         {
             throw new ValidationException(
                 new Dictionary<string, string[]> { { "InterfaceUid", [$"Interface '{request.InterfaceUid}' does not exist."] } });
+        }
+
+        if (!implementingObject.IsActive)
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "ObjUid", [$"Object '{request.ObjUid}' is inactive."] } });
+        }
+
+        if (!interfaceObject.IsActive)
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]> { { "InterfaceUid", [$"Interface '{request.InterfaceUid}' is inactive."] } });
+        }
+
+        if (implementingObject.ObjTypeUid != MetaSchemaConstants.ObjectTypes.Class
+
+            // !await IsObjectOfTypeAsync(
+            //     implementingObject,
+            //     MetaSchemaConstants.ObjectTypes.Class,
+            //     cancellationToken)
+            )
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "ObjUid", ["The implementing object must be Class or derive from Class."] }
+                });
+        }
+
+        if (interfaceObject.ObjTypeUid != MetaSchemaConstants.ObjectTypes.Interface
+            // !await IsObjectOfTypeAsync(
+            //     interfaceObject,
+            //     MetaSchemaConstants.ObjectTypes.Interface,
+            //     cancellationToken)
+            )
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "InterfaceUid", ["The interface must be Interface or derive from Interface."] }
+                });
         }
 
         if (await _context.MetaInterfaces.AsNoTracking().AnyAsync(
@@ -260,6 +345,45 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                 new Dictionary<string, string[]> { { "IsPrimary", ["The object already has a primary interface."] } });
         }
     }
+
+    // private async Task<bool> IsObjectOfTypeAsync(
+    //     MetaObject metaObject,
+    //     Guid requiredTypeUid,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var currentUid = metaObject.Uuid;
+    //     var currentTypeUid = metaObject.ObjTypeUid;
+    //     var visited = new HashSet<Guid>();
+
+    //     while (visited.Add(currentUid))
+    //     {
+    //         if (currentUid == requiredTypeUid)
+    //         {
+    //             return true;
+    //         }
+
+    //         if (!currentTypeUid.HasValue)
+    //         {
+    //             return false;
+    //         }
+
+    //         var parentType = await _context.MetaObjects
+    //             .AsNoTracking()
+    //             .Where(x => x.Uuid == currentTypeUid.Value)
+    //             .Select(x => new { x.Uuid, x.ObjTypeUid })
+    //             .SingleOrDefaultAsync(cancellationToken);
+
+    //         if (parentType is null)
+    //         {
+    //             return false;
+    //         }
+
+    //         currentUid = parentType.Uuid;
+    //         currentTypeUid = parentType.ObjTypeUid;
+    //     }
+
+    //     return false;
+    // }
 
     public async Task ValidateUpdateRelationshipAsync(
         MetaObjectRelationship existingRel,

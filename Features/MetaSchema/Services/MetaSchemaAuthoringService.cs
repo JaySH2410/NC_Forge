@@ -22,7 +22,7 @@ namespace Forge.Features.MetaSchema.Services;
 //7. DeactivateRelationshipAsync
 //8. TerminateRelationshipAsync
 
-public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
+public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
 {
     private readonly AppDbContext _context;
     private readonly IMetaSchemaValidationService _validationService;
@@ -34,7 +34,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         IMetaSchemaValidationService validationService,
         IMetaSchemaService metaSchemaService,
         IForgeUuidGenerator uuidGenerator
-        )
+    )
     {
         _context = context;
         _validationService = validationService;
@@ -87,7 +87,8 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     {
         var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
-        if (existingObject == null) {
+        if (existingObject == null)
+        {
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
         }
 
@@ -117,16 +118,18 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
     public async Task DeactivateObjectAsync(
         UuidRequest request,
-        CancellationToken cancellationToken = default){
+        CancellationToken cancellationToken = default)
+    {
         var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
         if (existingObject == null)
         {
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
         }
+
         await _validationService.ValidateDeactivateObjectAsync(
-                existingObject,
-                cancellationToken);
+            existingObject,
+            cancellationToken);
 
         existingObject.IsActive = false;
 
@@ -143,9 +146,10 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         {
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
         }
+
         await _validationService.ValidateActivateObjectAsync(
-                existingObject,
-                cancellationToken);
+            existingObject,
+            cancellationToken);
 
         existingObject.IsActive = true;
 
@@ -188,10 +192,26 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
     //    return metaObject;
     //}
 
-    public async Task<MetaObjectRelationshipResponse> CreateRelationshipAsync(
+    public Task<MetaObjectRelationshipResponse> CreateRelationshipAsync(
         CreateMetaObjectRelationshipRequest request,
         CancellationToken cancellationToken = default)
     {
+        return CreateRelationshipAsync(
+            request,
+            allowInterfaceImplementationRelationship: false,
+            cancellationToken);
+    }
+
+    private async Task<MetaObjectRelationshipResponse> CreateRelationshipAsync(
+        CreateMetaObjectRelationshipRequest request,
+        bool allowInterfaceImplementationRelationship,
+        CancellationToken cancellationToken)
+    {
+        if (!allowInterfaceImplementationRelationship)
+        {
+            _validationService.ValidateGenericRelationshipAuthoringAllowed(request.RelTypeUid);
+        }
+
         MetaObjectRelationship requestEntity = new MetaObjectRelationship
         {
             //Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken),
@@ -208,7 +228,7 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             cancellationToken);
 
         requestEntity.Uuid = await _uuidGenerator.GenerateRelationshipUuidAsync(cancellationToken);
-        
+
         _context.MetaObjectRelationships.Add(requestEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -238,11 +258,12 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         if (existingRel == null)
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
+        _validationService.ValidateGenericRelationshipAuthoringAllowed(existingRel.RelTypeUid);
 
         await _validationService.ValidateUpdateRelationshipAsync(
-        existingRel,
-        request,
-        cancellationToken);
+            existingRel,
+            request,
+            cancellationToken);
 
         existingRel.DisplayName = request.DisplayName;
         existingRel.Description = request.Description;
@@ -267,15 +288,18 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
     public async Task DeactivateRelationshipAsync(
         UuidRequest request,
-        CancellationToken cancellationToken = default){
+        CancellationToken cancellationToken = default)
+    {
         var existingRel = await _metaSchemaService.GetRelationshipAsync(request.Uuid, cancellationToken);
 
         if (existingRel == null)
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
+        _validationService.ValidateGenericRelationshipAuthoringAllowed(existingRel.RelTypeUid);
+
         await _validationService.ValidateDeactivateRelationshipAsync(
-                existingRel,
-                cancellationToken);
+            existingRel,
+            cancellationToken);
 
         existingRel.IsActive = false;
 
@@ -291,19 +315,21 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
         if (existingRel == null)
             throw new NotFoundException($"Relationship with '{request.Uuid}' was not found");
 
+        _validationService.ValidateGenericRelationshipAuthoringAllowed(existingRel.RelTypeUid);
 
         await _validationService.ValidateActivateRelationshipAsync(
-                    existingRel,
-                    cancellationToken);
+            existingRel,
+            cancellationToken);
 
-            existingRel.IsActive = true;
+        existingRel.IsActive = true;
 
-            await _context.SaveChangesAsync(cancellationToken);
-        }
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 
     public async Task TerminateRelationshipAsync(
         UuidRequest request,
-        CancellationToken cancellationToken = default){
+        CancellationToken cancellationToken = default)
+    {
         throw new NotImplementedException();
         //Load Relationship
         //      │
@@ -335,12 +361,14 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
             {
                 Name = $"{relationshipName}:{request.ObjUid:N}:{request.InterfaceUid:N}",
                 DisplayName = $"{relationshipName}:{request.ObjUid:N}:{request.InterfaceUid:N}",
-                Description = $"Class: {request.ObjUid:N} | Rel: {relationshipName} | Interface: {request.InterfaceUid:N}",
+                Description =
+                    $"Class: {request.ObjUid:N} | Rel: {relationshipName} | Interface: {request.InterfaceUid:N}",
                 End1Uid = request.ObjUid,
                 End2Uid = request.InterfaceUid,
                 RelTypeUid = relationshipTypeUid,
                 Ordinal = request.Ordinal
             },
+            allowInterfaceImplementationRelationship: true,
             cancellationToken);
 
         var projection = new MetaInterface
@@ -381,5 +409,4 @@ public class MetaSchemaAuthoringService: IMetaSchemaAuthoringService
 
     //    return metaRelObject;
     //}
-
 }

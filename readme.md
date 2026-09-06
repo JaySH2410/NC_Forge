@@ -218,12 +218,12 @@ Implemented or partially implemented:
 - SSDT table scripts for `MetaInterface`, `MetaPropertyValue`, and `MetaPropertyValueDetail`.
 - Unique `(ObjUid, IfUid)` principal key and matching composite `MetaPropertyValue` foreign key.
 - `MetaPropertyValue.IsActive`, inherited through `ActivatableEntity` and mapped to the SSDT column.
+- Generic relationship writes reject `Implements` and `PrimaryInterface`; specialized interface authoring uses the shared relationship creation path internally.
 - Empty-UUID guard in `AppDbContext.SaveChangesAsync`.
 
 Outstanding implementation work:
 
 - Make relationship/projection seeding atomic and align it with the one-relationship model (GitHub issue #19).
-- Prevent generic relationship writes from bypassing interface projection synchronization (GitHub issue #18).
 - Implement synchronized update/deactivate/activate/delete operations.
 
 ## 6. Testing strategy

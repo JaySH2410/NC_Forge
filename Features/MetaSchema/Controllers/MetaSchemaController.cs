@@ -363,6 +363,7 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPut("relationships")]
     [ProducesResponseType(typeof(ApiResponse<MetaObjectRelationshipResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateRelationship(
@@ -380,6 +381,7 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPatch("relationships/activate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -399,6 +401,7 @@ public class MetaSchemaController : ControllerBase
 
     [HttpPatch("relationships/deactivate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
