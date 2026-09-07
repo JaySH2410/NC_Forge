@@ -17,6 +17,7 @@ public class MetaObjectConfiguration: IEntityTypeConfiguration<MetaObject>
         builder.HasIndex(x => x.ObjTypeUid);
         builder.HasIndex(x => x.ApplicationUid);
         builder.HasIndex(x => x.IsActive);
+        builder.Property(x => x.Version).IsConcurrencyToken();
 
         //ObjTypeUid->MetaObject.ObjUid(nullable — root types have no type)
         builder.HasOne<MetaObject>()

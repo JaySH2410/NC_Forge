@@ -12,5 +12,6 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Uuid).IsUnique();
         builder.HasIndex(x => x.IsActive);
+        builder.Property(x => x.Version).IsConcurrencyToken();
     }
 }
