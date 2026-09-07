@@ -174,12 +174,12 @@ Represents **what operational state that revision is currently in**.
 
 A Class definition may have:
 
--   version `1.2.0.1`
+-   version `1.2.0.1.0`
 -   lifecycle state `Published`
 
 Later, a new version may be created:
 
--   version `1.2.1.1`
+-   version `1.2.1.1.0`
 -   lifecycle state `Draft`
 
 And once the new version is published, the older published version may become `Archived`.

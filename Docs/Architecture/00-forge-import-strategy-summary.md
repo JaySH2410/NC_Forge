@@ -224,7 +224,7 @@ flowchart LR
 7. **Commit:** Commit the transaction so changes become live.  
 8. **Logging:** Record the outcome. In the `Imports` table mark this import as successful, and in `ImportRecords` log each object’s action.  
 
-*Error handling:* If any step fails, abort the transaction, log the error, and leave the system unchanged. The user sees detailed error messages (e.g. “Version conflict: object X, expected version 1.2.0.3 but found 1.0.0.2”).
+*Error handling:* If any step fails, abort the transaction, log the error, and leave the system unchanged. The user sees detailed error messages (e.g. “Version conflict: object X, expected version 1.2.0.3.0 but found 1.0.0.2.0”).
 
 ---
 
@@ -276,7 +276,7 @@ CREATE TABLE ConfigObject (
   Name         VARCHAR,
   Type         VARCHAR,
   Active       BOOLEAN,  -- true = current version
-  Version      VARCHAR,  -- display e.g. "1.2.3.4"
+  Version      VARCHAR,  -- display e.g. "1.2.3.4.0"
   CreatedBy    VARCHAR,
   CreatedAt    TIMESTAMP,
   -- other schema fields...
@@ -337,7 +337,7 @@ This manifest lists each class/object with its ID, properties, relationships, an
 ## 13. Recommendations and Next Steps  
 
 - **Standardize on a package format:** For v1, using a **ZIP-based `.bakpak`** (or tarball) with a clear manifest (JSON) is pragmatic. Ensure the format is not easily human-editable (optional encryption) but contains a machine-readable manifest for Forge to parse.  
-- **Implement versioned import:** Always do **insert+deactivate old** inside a transaction. Use stable GUIDs and semver (e.g. `AppVersion.ObjectRevision`) as per the plan.  
+- **Implement versioned import:** Always do **insert+deactivate old** inside a transaction. Use stable GUIDs and Forge's canonical five-part object version as defined in the versioning model.
 - **Build the import log schema:** Create `Imports` and `ImportRecords` tables as above. Log every action for audit.  
 - **Dependencies:** Code the importer to sort objects by references. Enforce that all used interfaces exist.  
 - **Conflict rules:** Decide on MasterPrefix policy (likely: admin assigns a unique prefix per tenant/project; conflicting prefixes cause an import error). Auto-prefix substitution could be dangerous, so prefer explicit uniqueness.  
@@ -351,4 +351,3 @@ By following these steps, Forge can achieve a robust import system: packages bec
 **Mermaid Workflow:** Imported above illustrates these steps. 
 
 **Sources:** The above recommendations incorporate industry examples and best practices: the Azure/OCI guidance on signing, Microsoft's Dynamics migration tool flow, the Delta Lake upsert pattern, semantic versioning rules, and DevOps schema migration advice. These lend authority to the chosen strategies. 
-

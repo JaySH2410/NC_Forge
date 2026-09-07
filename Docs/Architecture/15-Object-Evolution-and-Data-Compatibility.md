@@ -22,7 +22,7 @@ Consider an object with the following lifecycle.
 
 ## 
 
-Object version = `1.0.0.1`
+Object version = `1.0.0.1.0`
 
 At this point, the object exists and runtime data has already been stored.
 
@@ -41,9 +41,9 @@ The object is updated and now includes:
 
 New object version may become:
 
--   `1.0.0.2`  
+-   `1.0.0.1.1`
     or under a new app version lineage:
--   `1.0.2.1`
+-   `1.0.2.1.1`
 
 #### Step 3 — New data is created
 

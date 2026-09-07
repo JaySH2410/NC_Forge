@@ -176,19 +176,19 @@ not by writing new backend feature code each time.
 - `major.minor.patch`
 
 ### 14.2 Object Version
-- `app_major.app_minor.app_patch.object_revision`
+- `app_major.app_minor.app_patch.object_major.object_minor`
 
 ### 14.3 Versioning Rules
 <!--
 When app version changes but object not updated
 When object updated after app version changes
-Resetting object revision
+Preserving and incrementing the object major/minor lineage
 -->
 
 ### 14.4 Suggested Storage Model
 <!--
-Store AppVersion + ObjectRevision separately
-Display combined version
+Store one canonical Version string on each row
+The server assigns initial versions and applies typed increment intents
 -->
 
 ---

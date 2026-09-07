@@ -220,6 +220,7 @@ Implemented or partially implemented:
 - `MetaPropertyValue.IsActive`, inherited through `ActivatableEntity` and mapped to the SSDT column.
 - Generic relationship writes reject `Implements` and `PrimaryInterface`; specialized interface authoring uses the shared relationship creation path internally.
 - Empty-UUID guard in `AppDbContext.SaveChangesAsync`.
+- Server-controlled application (`major.minor.patch`) and object (`app-major.app-minor.app-patch.object-major.object-minor`) version increments.
 
 Outstanding implementation work:
 
@@ -247,7 +248,6 @@ Integration tests should run against SQL Server or a compatible test container b
 - High-volume Data-layer tables: `DataObject`, `DataObjectValue`, `DataObjectValueDetail`, and `DataObjectRelationship`.
 - Dynamic OData `IEdmModel` generation from the metadata catalog.
 - Multi-domain/tenant federation.
-- Baseline/configuration versioning.
 - Multi-vendor organization tracking.
 - Instance-level interface claims beyond the object's configured class.
 - Denormalized read projections beyond `MetaInterface`, until measured load requires them.
