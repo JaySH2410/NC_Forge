@@ -6,6 +6,7 @@ using Forge.Infrastructure.Persistence;
 using Forge.Infrastructure.Persistence.Seeds;
 using Forge.Middleware;
 using Forge.Shared.Filters;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,11 @@ builder.Services.AddHealthChecks();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(
+        new JsonStringEnumConverter(allowIntegerValues: false));
 });
 ////.ConfigureApiBehaviorOptions(options =>
 //// {
