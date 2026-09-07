@@ -1,3 +1,5 @@
+using Forge.Features.MetaSchema.Versioning;
+
 namespace Forge.Features.MetaSchema.Constants;
 
 public class MetaSchemaConstants
@@ -5,12 +7,12 @@ public class MetaSchemaConstants
     public static class Applications
     {
         public static readonly Guid CoreForge = Guid.Parse("019f9b2e-a69a-7454-9d09-100000000001");
-        public const string CurrentVersion = "0.0.1";
+        public const string CurrentVersion = ForgeVersionCalculator.InitialApplicationVersion;
     }
 
     public static class Version
     {
-        public const string InitialObjectVersion = "0.0.1.1";
+        public const string InitialObjectVersion = Applications.CurrentVersion + ".1.0";
     }
 
     public static class ObjectTypes
