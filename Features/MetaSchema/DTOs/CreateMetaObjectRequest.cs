@@ -10,5 +10,4 @@ public sealed class CreateMetaObjectRequest
     public string? Description { get; set; }
     public Guid? ObjTypeUid { get; set; }
     public Guid ApplicationUid { get; set; }
-    public string Version { get; set; } = null!;
 }

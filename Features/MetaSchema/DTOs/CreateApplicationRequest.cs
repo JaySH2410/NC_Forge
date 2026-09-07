@@ -8,5 +8,4 @@ public class CreateApplicationRequest
 
     public string? Description { get; set; }
 
-    public required string Version { get; set; }
 }

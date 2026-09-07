@@ -1,4 +1,7 @@
-﻿namespace Forge.Features.MetaSchema.DTOs;
+﻿using Forge.Features.MetaSchema.Versioning;
+
+
+namespace Forge.Features.MetaSchema.DTOs;
 
 public class UpdateApplicationRequest: UuidRequest
 {
@@ -6,5 +9,5 @@ public class UpdateApplicationRequest: UuidRequest
 
     public string? Description { get; init; }
 
-    public string? Version { get; init; }
+    public required ApplicationVersionIncrement VersionIncrement { get; init; }
 }
