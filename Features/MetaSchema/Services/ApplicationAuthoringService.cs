@@ -4,6 +4,8 @@ using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
 using Forge.Shared.Identifiers;
+using Forge.Features.MetaSchema.Versioning;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -34,7 +36,7 @@ public class ApplicationAuthoringService: IApplicationAuthoringService
             Name = request.Name,
             DisplayName = request.DisplayName,
             Description = request.Description,
-            Version = request.Version
+            Version = ForgeVersionCalculator.InitialApplicationVersion
         };
 
         await _validationService.ValidateCreateApplicationAsync(requestEntity, cancellationToken);
@@ -73,8 +75,19 @@ public class ApplicationAuthoringService: IApplicationAuthoringService
 
         existingObject.DisplayName = request.DisplayName;
         existingObject.Description = request.Description;
+        existingObject.Version = ForgeVersionCalculator.IncrementApplicationVersion(
+            existingObject.Version,
+            request.VersionIncrement);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new BusinessException(
+                "The application was changed by another request. Reload it and retry the version update.");
+        }
 
         var response = new ApplicationResponse
         {

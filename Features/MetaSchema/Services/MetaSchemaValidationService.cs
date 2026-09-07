@@ -30,6 +30,7 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
 
     public async Task ValidateCreateObjectAsync(
         MetaObject newObject,
+        Application? application,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(newObject.Name)) { 
@@ -120,18 +121,48 @@ public class MetaSchemaValidationService : IMetaSchemaValidationService
                     { "ObjTypeUid", ["Object cannot reference itself as its type."] }
                 });
         }
+
+        ValidateActiveApplication(newObject.ApplicationUid, application);
     }
 
     public async Task ValidateUpdateObjectAsync(
         MetaObject existingObject,
         UpdateMetaObjectRequest request,
+        Application? application,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(request.DisplayName))
         {
             request.DisplayName = existingObject.Name;
         }
+
+        ValidateActiveApplication(existingObject.ApplicationUid, application);
+
         await Task.CompletedTask;
+    }
+
+    private static void ValidateActiveApplication(
+        Guid applicationUid,
+        Application? application)
+    {
+        if (application is null)
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "ApplicationUid", [$"Application '{applicationUid}' does not exist."] }
+                });
+        }
+
+        if (!application.IsActive)
+        {
+            throw new ValidationException(
+                new Dictionary<string, string[]>
+                {
+                    { "ApplicationUid", [$"Application '{applicationUid}' is inactive."] }
+                });
+        }
+
     }
 
     public async Task ValidateDeactivateObjectAsync(

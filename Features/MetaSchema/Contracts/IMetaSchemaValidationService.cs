@@ -7,11 +7,13 @@ public interface IMetaSchemaValidationService
 {
     Task ValidateCreateObjectAsync(
         MetaObject metaObject,
+        Application? application,
         CancellationToken cancellationToken = default);
 
     Task ValidateUpdateObjectAsync(
         MetaObject metaObject,
         UpdateMetaObjectRequest request,
+        Application? application,
         CancellationToken cancellationToken = default);
 
     Task ValidateDeactivateObjectAsync(

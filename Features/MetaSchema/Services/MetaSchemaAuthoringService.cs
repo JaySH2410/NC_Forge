@@ -6,7 +6,9 @@ using Forge.Features.MetaSchema.Entities;
 using Forge.Infrastructure.Persistence;
 using Forge.Shared.Exceptions;
 using Forge.Shared.Identifiers;
+using Forge.Features.MetaSchema.Versioning;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Forge.Features.MetaSchema.Services;
 
@@ -46,6 +48,10 @@ public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
         CreateMetaObjectRequest metaObject,
         CancellationToken cancellationToken = default)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync(
+            IsolationLevel.RepeatableRead,
+            cancellationToken);
+
         MetaObject metaObjectEntity = new MetaObject
         {
             //Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken),
@@ -53,18 +59,27 @@ public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
             DisplayName = metaObject.DisplayName,
             Description = metaObject.Description,
             ObjTypeUid = metaObject.ObjTypeUid,
-            ApplicationUid = metaObject.ApplicationUid,
-            Version = metaObject.Version
+            ApplicationUid = metaObject.ApplicationUid
         };
+
+        var application = await GetApplicationForObjectAsync(
+            metaObjectEntity.ApplicationUid,
+            cancellationToken);
+
         await _validationService.ValidateCreateObjectAsync(
             metaObjectEntity,
+            application,
             cancellationToken);
+
+        metaObjectEntity.Version = ForgeVersionCalculator.CreateInitialObjectVersion(
+            application!.Version);
 
         metaObjectEntity.Uuid = await _uuidGenerator.GenerateMetaObjectUuidAsync(cancellationToken);
 
         _context.MetaObjects.Add(metaObjectEntity);
 
         await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
 
         MetaObjectResponse response = new MetaObjectResponse
         {
@@ -85,6 +100,10 @@ public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
         UpdateMetaObjectRequest request,
         CancellationToken cancellationToken = default)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync(
+            IsolationLevel.RepeatableRead,
+            cancellationToken);
+
         var existingObject = await _metaSchemaService.GetObjectAsync(request.Uuid, cancellationToken);
 
         if (existingObject == null)
@@ -92,15 +111,34 @@ public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
             throw new NotFoundException($"Object with '{request.Uuid}' was not found");
         }
 
+        var application = await GetApplicationForObjectAsync(
+            existingObject.ApplicationUid,
+            cancellationToken);
+
         await _validationService.ValidateUpdateObjectAsync(
             existingObject,
             request,
+            application,
             cancellationToken);
 
         existingObject.DisplayName = request.DisplayName;
         existingObject.Description = request.Description;
+        existingObject.Version = ForgeVersionCalculator.IncrementObjectVersion(
+            existingObject.Version,
+            application!.Version,
+            request.VersionIncrement);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new BusinessException(
+                "The object was changed by another request. Reload it and retry the version update.");
+        }
+
+        await transaction.CommitAsync(cancellationToken);
 
         var response = new MetaObjectResponse
         {
@@ -115,6 +153,15 @@ public class MetaSchemaAuthoringService : IMetaSchemaAuthoringService
         };
         return response;
     }
+
+    private Task<Application?> GetApplicationForObjectAsync(
+        Guid applicationUid,
+        CancellationToken cancellationToken) =>
+        _context.Applications
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.Uuid == applicationUid,
+                cancellationToken);
 
     public async Task DeactivateObjectAsync(
         UuidRequest request,
