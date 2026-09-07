@@ -21,5 +21,9 @@ public sealed class UpdateMetaObjectRequestValidator
             .MaximumLength(4000)
             .WithMessage("Description cannot exceed 4000 characters.")
             .When(x => x.Description is not null);
+
+        RuleFor(x => x.VersionIncrement)
+            .IsInEnum()
+            .WithMessage("VersionIncrement must be Minor or Major.");
     }
 }

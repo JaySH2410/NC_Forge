@@ -24,10 +24,5 @@ public sealed class CreateApplicationRequestValidator
             .WithMessage("Description cannot exceed 4000 characters.")
             .When(x => x.Description is not null);
         
-        RuleFor(x => x.Version)
-            .NotEmpty()
-            .WithMessage("Version is required.")
-            .MaximumLength(40)
-            .WithMessage("Version cannot exceed 40 characters.");
     }
 }

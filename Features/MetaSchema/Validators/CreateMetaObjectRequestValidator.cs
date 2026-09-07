@@ -33,10 +33,5 @@ public sealed class CreateMetaObjectRequestValidator
             .NotEmpty()
             .WithMessage("ApplicationUid is required.");
 
-        RuleFor(x => x.Version)
-            .NotEmpty()
-            .WithMessage("Version is required.")
-            .MaximumLength(40)
-            .WithMessage("Version cannot exceed 40 characters.");
     }
 }
